@@ -356,7 +356,6 @@ Bu proje eğitim amaçlı geliştirilmiştir. Ticari kullanım için gerekli lis
 
 ---
 
-**Geliştirici**: [Öğrenci Adı]  
 **Proje Tarihi**: Ağustos 2025  
 **Versiyon**: 1.0.0  
 **Framework**: ASP.NET Core MVC 9.0
