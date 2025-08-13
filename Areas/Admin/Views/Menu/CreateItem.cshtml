@@ -1,0 +1,424 @@
+@model HarborRestaurant.Entities.Concrete.MenuItem
+@{
+    ViewData["Title"] = "Yeni Ürün Oluştur";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 mb-0 text-dark">
+                <i class="fas fa-plus-circle text-primary me-2"></i>Yeni Ürün Oluştur
+            </h1>
+            <p class="text-muted mb-0">Menünüze yeni bir ürün ekleyin</p>
+        </div>
+        <a href="@Url.Action("Items")" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Geri Dön
+        </a>
+    </div>
+
+    <form asp-action="CreateItem" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom-0 py-3">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-utensils text-primary me-2"></i>Ürün Bilgileri
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-8">
+                                <label asp-for="Name" class="form-label fw-semibold">
+                                    <i class="fas fa-signature me-1"></i>Ürün Adı *
+                                </label>
+                                <input asp-for="Name" class="form-control form-control-lg" 
+                                       placeholder="Örn: Izgara Somon" required />
+                                <span asp-validation-for="Name" class="invalid-feedback d-block"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="CategoryId" class="form-label fw-semibold">
+                                    <i class="fas fa-tags me-1"></i>Kategori *
+                                </label>
+                                <select asp-for="CategoryId" class="form-select form-select-lg" asp-items="ViewBag.Categories" required>
+                                    <option value="">Kategori Seçin</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="invalid-feedback d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-semibold">
+                                <i class="fas fa-align-left me-1"></i>Açıklama
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="4" 
+                                      placeholder="Ürün hakkında detaylı bilgi, malzemeler, pişirme yöntemi vb."></textarea>
+                            <span asp-validation-for="Description" class="invalid-feedback d-block"></span>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label asp-for="Price" class="form-label fw-semibold">
+                                    <i class="fas fa-lira-sign me-1"></i>Fiyat (₺) *
+                                </label>
+                                <input asp-for="Price" class="form-control form-control-lg" 
+                                       type="number" step="0.01" min="0" placeholder="0,00" required />
+                                <span asp-validation-for="Price" class="invalid-feedback d-block"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="PreparationTime" class="form-label fw-semibold">
+                                    <i class="fas fa-clock me-1"></i>Hazırlık (dk)
+                                </label>
+                                <input asp-for="PreparationTime" class="form-control form-control-lg" 
+                                       type="number" min="0" placeholder="15" />
+                                <span asp-validation-for="PreparationTime" class="invalid-feedback d-block"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Calories" class="form-label fw-semibold">
+                                    <i class="fas fa-fire me-1"></i>Kalori
+                                </label>
+                                <input asp-for="Calories" class="form-control form-control-lg" 
+                                       type="number" min="0" placeholder="350" />
+                                <span asp-validation-for="Calories" class="invalid-feedback d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Ingredients" class="form-label fw-semibold">
+                                <i class="fas fa-list-ul me-1"></i>İçindekiler / Malzemeler
+                            </label>
+                            <textarea asp-for="Ingredients" class="form-control" rows="2" 
+                                      placeholder="Somon, limon, zeytinyağı, tuz, karabiber, taze otlar"></textarea>
+                            <span asp-validation-for="Ingredients" class="invalid-feedback d-block"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-image me-1"></i>Ürün Resmi
+                            </label>
+                            <input type="file" name="imageFile" class="form-control form-control-lg" accept="image/*" />
+                            <div class="form-text">JPG, PNG formatları desteklenir. Maksimum 5MB.</div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <div class="form-check form-switch">
+                                    <input asp-for="IsAvailable" class="form-check-input" type="checkbox" 
+                                           role="switch" checked />
+                                    <label asp-for="IsAvailable" class="form-check-label fw-semibold">
+                                        <i class="fas fa-check-circle me-1"></i>Müsait
+                                    </label>
+                                </div>
+                                <small class="text-muted">Müsait olmayan ürünler menüde görünmez</small>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check form-switch">
+                                    <input asp-for="IsFeatured" class="form-check-input" type="checkbox" 
+                                           role="switch" />
+                                    <label asp-for="IsFeatured" class="form-check-label fw-semibold">
+                                        <i class="fas fa-star me-1"></i>Öne Çıkan
+                                    </label>
+                                </div>
+                                <small class="text-muted">Öne çıkan ürünler özel olarak vurgulanır</small>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check form-switch">
+                                    <input asp-for="IsSpicy" class="form-check-input" type="checkbox" 
+                                           role="switch" />
+                                    <label asp-for="IsSpicy" class="form-check-label fw-semibold">
+                                        <i class="fas fa-pepper-hot me-1"></i>Acı
+                                    </label>
+                                </div>
+                                <small class="text-muted">Acı ürünler işaretlenir</small>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check form-switch">
+                                    <input asp-for="IsActive" class="form-check-input" type="checkbox" 
+                                           role="switch" checked />
+                                    <label asp-for="IsActive" class="form-check-label fw-semibold">
+                                        <i class="fas fa-toggle-on me-1"></i>Aktif
+                                    </label>
+                                </div>
+                                <small class="text-muted">Pasif ürünler görünmez</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="@Url.Action("Items")" class="btn btn-light px-4">
+                                <i class="fas fa-times me-1"></i>İptal
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-save me-1"></i>Ürün Oluştur
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-info text-white py-3">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-eye me-2"></i>Resim Önizleme
+                        </h6>
+                    </div>
+                    <div class="card-body text-center p-4">
+                        <img id="imagePreview" alt="Resim Önizlemesi" 
+                             class="img-fluid rounded shadow-sm" style="max-height: 200px; display: none;">
+                        <div id="noImagePlaceholder" class="text-muted">
+                            <i class="fas fa-image fa-4x mb-3 text-light"></i>
+                            <p class="mb-0">Resim seçilmedi</p>
+                            <small>Dosya seçtiğinizde burada görünecektir</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-success text-white py-3">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Bilgilendirme
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item border-0 px-0">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>Ürün adı ve kategori zorunludur</small>
+                            </div>
+                            <div class="list-group-item border-0 px-0">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>Fiyat 0'dan büyük olmalıdır</small>
+                            </div>
+                            <div class="list-group-item border-0 px-0">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>Resim yüklemek isteğe bağlıdır</small>
+                            </div>
+                            <div class="list-group-item border-0 px-0">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <small>Öne çıkan ürünler ana sayfada görünür</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-warning text-dark py-3">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>İpuçları
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="accordion accordion-flush" id="tipsAccordion">
+                            <div class="accordion-item border-0">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed p-2" type="button" 
+                                            data-bs-toggle="collapse" data-bs-target="#resimTip">
+                                        <small><strong>Resim İpuçları</strong></small>
+                                    </button>
+                                </h2>
+                                <div id="resimTip" class="accordion-collapse collapse">
+                                    <div class="accordion-body p-2">
+                                        <small class="text-muted">
+                                            • Kare format (1:1) tercih edilir<br>
+                                            • Minimum 400x400 piksel<br>
+                                            • Yemeğin net görüntüsü<br>
+                                            • İyi aydınlatma
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed p-2" type="button" 
+                                            data-bs-toggle="collapse" data-bs-target="#aciklamaTip">
+                                        <small><strong>Açıklama İpuçları</strong></small>
+                                    </button>
+                                </h2>
+                                <div id="aciklamaTip" class="accordion-collapse collapse">
+                                    <div class="accordion-body p-2">
+                                        <small class="text-muted">
+                                            • Ana malzemeleri belirtin<br>
+                                            • Pişirme yöntemini açıklayın<br>
+                                            • Allergen bilgilerini ekleyin<br>
+                                            • Porsiyon büyüklüğünü belirtin
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        $(document).ready(function() {
+            // Bootstrap 5 validation
+            (function() {
+                'use strict';
+                window.addEventListener('load', function() {
+                    var forms = document.getElementsByClassName('needs-validation');
+                    var validation = Array.prototype.filter.call(forms, function(form) {
+                        form.addEventListener('submit', function(event) {
+                            if (form.checkValidity() === false) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+                }, false);
+            })();
+            
+            // Image preview with better styling
+            $('input[name="imageFile"]').on('change', function() {
+                var file = this.files[0];
+                if (file) {
+                    // File size check
+                    var fileSize = file.size / 1024 / 1024; // MB
+                    if (fileSize > 5) {
+                        alert('⚠️ Resim boyutu 5MB\'dan küçük olmalıdır.');
+                        $(this).val('');
+                        return;
+                    }
+                    
+                    // File type check
+                    var validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                    if (!validTypes.includes(file.type)) {
+                        alert('⚠️ Sadece JPG, PNG, GIF formatları kabul edilir.');
+                        $(this).val('');
+                        return;
+                    }
+                    
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#imagePreview')
+                            .attr('src', e.target.result)
+                            .show()
+                            .css({
+                                'border': '2px solid var(--success-color)',
+                                'background': 'white'
+                            });
+                        $('#noImagePlaceholder').hide();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#imagePreview').hide();
+                    $('#noImagePlaceholder').show();
+                }
+            });
+            
+            // Enhanced form validation with better UX
+            $('form').on('submit', function(e) {
+                var isValid = true;
+                var errors = [];
+                
+                // Name validation
+                var name = $('#Name').val().trim();
+                if (name.length < 2) {
+                    errors.push('• Ürün adı en az 2 karakter olmalıdır');
+                    isValid = false;
+                }
+                
+                // Category validation
+                var categoryId = $('#CategoryId').val();
+                if (!categoryId) {
+                    errors.push('• Lütfen bir kategori seçin');
+                    isValid = false;
+                }
+                
+                // Price validation
+                var price = parseFloat($('#Price').val());
+                if (isNaN(price) || price <= 0) {
+                    errors.push('• Geçerli bir fiyat giriniz (0\'dan büyük)');
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    
+                    // Show errors in a nice format
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Form Hataları',
+                        html: errors.join('<br>'),
+                        confirmButtonText: 'Tamam',
+                        confirmButtonColor: '#e74c3c'
+                    });
+                    
+                    return false;
+                } else {
+                    // Show loading state
+                    var submitBtn = $('button[type="submit"]');
+                    submitBtn.prop('disabled', true)
+                           .html('<i class="fas fa-spinner fa-spin me-1"></i>Oluşturuluyor...');
+                }
+            });
+            
+            // Character counters with better styling
+            $('#Description, #Ingredients').on('input', function() {
+                var length = $(this).val().length;
+                var maxLength = $(this).attr('maxlength') || 1000;
+                var remaining = maxLength - length;
+                var targetId = $(this).attr('id') + 'Counter';
+                
+                if (!$('#' + targetId).length) {
+                    $(this).after('<small id="' + targetId + '" class="char-counter float-end mt-1"></small>');
+                }
+                
+                var counter = $('#' + targetId);
+                counter.text(remaining + ' karakter kaldı');
+                
+                if (remaining < 50) {
+                    counter.removeClass('text-muted text-success').addClass('text-warning');
+                } else if (remaining < 20) {
+                    counter.removeClass('text-muted text-warning').addClass('text-danger');
+                } else {
+                    counter.removeClass('text-warning text-danger').addClass('text-muted');
+                }
+            });
+            
+            // Price formatting
+            $('#Price').on('blur', function() {
+                var value = parseFloat($(this).val());
+                if (!isNaN(value)) {
+                    $(this).val(value.toFixed(2));
+                }
+            });
+            
+            // Real-time validation feedback
+            $('input[required], select[required]').on('blur', function() {
+                var $this = $(this);
+                var isValid = this.checkValidity();
+                
+                if (isValid) {
+                    $this.removeClass('is-invalid').addClass('is-valid');
+                } else {
+                    $this.removeClass('is-valid').addClass('is-invalid');
+                }
+            });
+            
+            // Switch animations
+            $('.form-switch input').on('change', function() {
+                var $switch = $(this);
+                var $label = $switch.next('label');
+                
+                if ($switch.is(':checked')) {
+                    $label.addClass('text-success');
+                    setTimeout(function() {
+                        $label.removeClass('text-success');
+                    }, 300);
+                }
+            });
+        });
+    </script>
+    
+    <!-- SweetAlert2 for better alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+}

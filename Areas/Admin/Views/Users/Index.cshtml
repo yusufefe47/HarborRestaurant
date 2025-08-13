@@ -1,0 +1,199 @@
+@model IEnumerable<HarborRestaurant.Models.ViewModels.UserViewModel>
+
+@{
+    ViewData["Title"] = "Kullanıcı Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Kullanıcı Yönetimi</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard")">Ana Sayfa</a></li>
+                        <li class="breadcrumb-item active">Kullanıcı Yönetimi</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Kullanıcılar</h3>
+                            <div class="card-tools">
+                                <a asp-action="Create" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus"></i> Yeni Kullanıcı
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @if (TempData["Success"] != null)
+                            {
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    @TempData["Success"]
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            }
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped" id="usersTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Ad Soyad</th>
+                                            <th>E-posta</th>
+                                            <th>Telefon</th>
+                                            <th>Rol</th>
+                                            <th>Durum</th>
+                                            <th>E-posta Onayı</th>
+                                            <th>Kayıt Tarihi</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var user in Model)
+                                        {
+                                            <tr data-user-id="@user.Id">
+                                                <td>@user.FullName</td>
+                                                <td>@user.Email</td>
+                                                <td>@(user.PhoneNumber ?? "-")</td>
+                                                <td>
+                                                    @if (user.Roles.Any())
+                                                    {
+                                                        @foreach (var role in user.Roles)
+                                                        {
+                                                            <span class="badge badge-@(role == "Admin" ? "danger" : "info")">@role</span>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-secondary">Rol Yok</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (user.IsActive)
+                                                    {
+                                                        <span class="badge badge-success">Aktif</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-danger">Pasif</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (user.EmailConfirmed)
+                                                    {
+                                                        <span class="badge badge-success"><i class="fas fa-check"></i> Onaylı</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-warning"><i class="fas fa-times"></i> Bekliyor</span>
+                                                    }
+                                                </td>
+                                                <td>@user.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info btn-sm" title="Detaylar">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning btn-sm" title="Düzenle">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        @if (!user.Roles.Contains("Admin"))
+                                                        {
+                                                            <button type="button" class="btn btn-@(user.IsActive ? "secondary" : "success") btn-sm toggle-status" 
+                                                                    data-user-id="@user.Id" title="@(user.IsActive ? "Pasif Yap" : "Aktif Yap")">
+                                                                <i class="fas fa-@(user.IsActive ? "ban" : "check")"></i>
+                                                            </button>
+                                                            <a asp-action="ChangePassword" asp-route-id="@user.Id" class="btn btn-primary btn-sm" title="Şifre Değiştir">
+                                                                <i class="fas fa-key"></i>
+                                                            </a>
+                                                            <button type="button" class="btn btn-danger btn-sm delete-user" 
+                                                                    data-user-id="@user.Id" title="Sil">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // DataTable
+            $('#usersTable').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Turkish.json"
+                }
+            });
+
+            // Toggle Status
+            $('.toggle-status').click(function () {
+                var userId = $(this).data('user-id');
+                var button = $(this);
+                
+                if (confirm('Kullanıcının durumunu değiştirmek istediğinizden emin misiniz?')) {
+                    $.post('@Url.Action("ToggleStatus")', { id: userId, __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() })
+                        .done(function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                setTimeout(function () { location.reload(); }, 1000);
+                            } else {
+                                toastr.error(data.message);
+                            }
+                        })
+                        .fail(function () {
+                            toastr.error('İşlem sırasında bir hata oluştu.');
+                        });
+                }
+            });
+
+            // Delete User
+            $('.delete-user').click(function () {
+                var userId = $(this).data('user-id');
+                
+                if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+                    $.post('@Url.Action("Delete")', { id: userId, __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() })
+                        .done(function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                setTimeout(function () { location.reload(); }, 1000);
+                            } else {
+                                toastr.error(data.message);
+                            }
+                        })
+                        .fail(function () {
+                            toastr.error('İşlem sırasında bir hata oluştu.');
+                        });
+                }
+            });
+        });
+    </script>
+}
+
+@* Anti-forgery token for AJAX requests *@
+@Html.AntiForgeryToken()

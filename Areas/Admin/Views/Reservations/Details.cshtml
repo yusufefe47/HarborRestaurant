@@ -1,0 +1,293 @@
+@model HarborRestaurant.Entities.Concrete.Reservation
+@{
+    ViewData["Title"] = $"Rezervasyon #{Model.ReservationId}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-calendar-check me-2"></i>Rezervasyon Detayları - #@Model.ReservationId
+    </h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.ReservationId" class="btn btn-primary">
+            <i class="fas fa-edit me-1"></i>Düzenle
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Geri Dön
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Customer Information -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-user me-2"></i>Müşteri Bilgileri
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-muted">Ad Soyad</label>
+                        <div class="fw-bold">@Model.FullName</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-muted">E-posta</label>
+                        <div class="fw-bold">
+                            <a href="mailto:@Model.Email" class="text-decoration-none">@Model.Email</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-muted">Telefon</label>
+                        <div class="fw-bold">
+                            <a href="tel:@Model.Phone" class="text-decoration-none">@Model.Phone</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-muted">Kişi Sayısı</label>
+                        <div class="fw-bold">
+                            <i class="fas fa-users me-1"></i>@Model.GuestCount kişi
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reservation Details -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-success">
+                    <i class="fas fa-calendar-alt me-2"></i>Rezervasyon Detayları
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-muted">Tarih</label>
+                        <div class="fw-bold">
+                            <i class="fas fa-calendar me-1"></i>@Model.CheckInDate.ToString("dd MMMM yyyy, dddd")
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-muted">Saat</label>
+                        <div class="fw-bold">
+                            <i class="fas fa-clock me-1"></i>@Model.ReservationTime.ToString("HH:mm")
+                        </div>
+                    </div>
+                    @if (Model.TableId.HasValue)
+                    {
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Masa</label>
+                            <div class="fw-bold">
+                                <i class="fas fa-table me-1"></i>Masa @Model.TableId
+                            </div>
+                        </div>
+                    }
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-muted">Durum</label>
+                        <div>
+                            <span class="badge @(Model.Status switch
+                            {
+                                HarborRestaurant.Entities.Enums.ReservationStatus.Pending => "bg-warning text-dark",
+                                HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed => "bg-success",
+                                HarborRestaurant.Entities.Enums.ReservationStatus.Completed => "bg-info",
+                                HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled => "bg-danger",
+                                _ => "bg-secondary"
+                            }) fs-6">
+                                @(Model.Status switch
+                                {
+                                    HarborRestaurant.Entities.Enums.ReservationStatus.Pending => "Bekliyor",
+                                    HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed => "Onaylandı",
+                                    HarborRestaurant.Entities.Enums.ReservationStatus.Completed => "Tamamlandı",
+                                    HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled => "İptal Edildi",
+                                    _ => "Bilinmiyor"
+                                })
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Special Requests and Notes -->
+        @if (!string.IsNullOrEmpty(Model.SpecialRequests) || !string.IsNullOrEmpty(Model.AdminNotes))
+        {
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">
+                        <i class="fas fa-sticky-note me-2"></i>Notlar
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.SpecialRequests))
+                    {
+                        <div class="mb-3">
+                            <label class="form-label text-muted">Özel İstekler</label>
+                            <div class="border rounded p-3 bg-light">
+                                @Model.SpecialRequests
+                            </div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.AdminNotes))
+                    {
+                        <div class="mb-3">
+                            <label class="form-label text-muted">Yönetici Notları</label>
+                            <div class="border rounded p-3 bg-warning bg-opacity-10">
+                                <i class="fas fa-lock me-1 text-warning"></i>@Model.AdminNotes
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- Quick Status Update -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-warning">Hızlı İşlemler</h6>
+            </div>
+            <div class="card-body">
+                @if (Model.Status == HarborRestaurant.Entities.Enums.ReservationStatus.Pending)
+                {
+                    <form asp-action="UpdateStatus" method="post" class="mb-2">
+                        <input type="hidden" name="id" value="@Model.ReservationId" />
+                        <input type="hidden" name="status" value="@HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed" />
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="fas fa-check me-1"></i>Rezervasyonu Onayla
+                        </button>
+                    </form>
+                }
+                
+                @if (Model.Status == HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed)
+                {
+                    <form asp-action="UpdateStatus" method="post" class="mb-2">
+                        <input type="hidden" name="id" value="@Model.ReservationId" />
+                        <input type="hidden" name="status" value="@HarborRestaurant.Entities.Enums.ReservationStatus.Completed" />
+                        <button type="submit" class="btn btn-info w-100">
+                            <i class="fas fa-check-double me-1"></i>Tamamlandı İşaretle
+                        </button>
+                    </form>
+                }
+                
+                @if (Model.Status != HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled && Model.Status != HarborRestaurant.Entities.Enums.ReservationStatus.Completed)
+                {
+                    <form asp-action="UpdateStatus" method="post" class="mb-2">
+                        <input type="hidden" name="id" value="@Model.ReservationId" />
+                        <input type="hidden" name="status" value="@HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled" />
+                        <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Bu rezervasyonu iptal etmek istediğinizden emin misiniz?')">
+                            <i class="fas fa-times me-1"></i>Rezervasyonu İptal Et
+                        </button>
+                    </form>
+                }
+                
+                <hr>
+                
+                <a asp-action="Edit" asp-route-id="@Model.ReservationId" class="btn btn-primary w-100 mb-2">
+                    <i class="fas fa-edit me-1"></i>Düzenle
+                </a>
+                
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" name="id" value="@Model.ReservationId" />
+                    <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Bu rezervasyonu kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!')">
+                        <i class="fas fa-trash me-1"></i>Kalıcı Sil
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- System Information -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-secondary">Sistem Bilgileri</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless">
+                    <tr>
+                        <td class="text-muted">Rezervasyon ID:</td>
+                        <td><code>#@Model.ReservationId</code></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Oluşturma Tarihi:</td>
+                        <td>@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                    </tr>
+                    @if (Model.UpdatedDate.HasValue)
+                    {
+                        <tr>
+                            <td class="text-muted">Son Güncelleme:</td>
+                            <td>@Model.UpdatedDate?.ToString("dd.MM.yyyy HH:mm")</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+        
+        <!-- Contact Actions -->
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-info">İletişim</h6>
+            </div>
+            <div class="card-body text-center">
+                <a href="mailto:@Model.Email?subject=Rezervasyon%20#@Model.ReservationId%20Hakkında" class="btn btn-outline-primary btn-sm mb-2 w-100">
+                    <i class="fas fa-envelope me-1"></i>E-posta Gönder
+                </a>
+                <a href="tel:@Model.Phone" class="btn btn-outline-success btn-sm w-100">
+                    <i class="fas fa-phone me-1"></i>Ara
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Status Update Modal -->
+<div class="modal fade" id="statusUpdateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Durum Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="UpdateStatus" method="post">
+                <input type="hidden" name="id" value="@Model.ReservationId" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Yeni Durum</label>
+                        <select name="status" class="form-select" required>
+                            @if (Model.Status == HarborRestaurant.Entities.Enums.ReservationStatus.Pending) {
+                                <option value="@HarborRestaurant.Entities.Enums.ReservationStatus.Pending" selected>Bekliyor</option>
+                            } else {
+                                <option value="@HarborRestaurant.Entities.Enums.ReservationStatus.Pending">Bekliyor</option>
+                            }
+                            @if (Model.Status == HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed) {
+                                <option value="@HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed" selected>Onaylandı</option>
+                            } else {
+                                <option value="@HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed">Onaylandı</option>
+                            }
+                            @if (Model.Status == HarborRestaurant.Entities.Enums.ReservationStatus.Completed) {
+                                <option value="@HarborRestaurant.Entities.Enums.ReservationStatus.Completed" selected>Tamamlandı</option>
+                            } else {
+                                <option value="@HarborRestaurant.Entities.Enums.ReservationStatus.Completed">Tamamlandı</option>
+                            }
+                            @if (Model.Status == HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled) {
+                                <option value="@HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled" selected>İptal Edildi</option>
+                            } else {
+                                <option value="@HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled">İptal Edildi</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adminNotes" class="form-label">Yönetici Notu (opsiyonel)</label>
+                        <textarea name="adminNotes" class="form-control" rows="3" placeholder="Durum değişikliği ile ilgili not...">@Model.AdminNotes</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

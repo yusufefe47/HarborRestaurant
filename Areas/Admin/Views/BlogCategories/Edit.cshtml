@@ -1,0 +1,169 @@
+@model HarborRestaurant.Entities.Concrete.BlogCategory
+
+@{
+    ViewData["Title"] = "Kategori Düzenle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Kategori Düzenle</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard")">Ana Sayfa</a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "BlogCategories")">Blog Kategorileri</a></li>
+                        <li class="breadcrumb-item active">Düzenle</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-edit"></i> Kategori Bilgileri
+                            </h3>
+                        </div>
+                        <form asp-action="Edit" method="post">
+                            <input asp-for="CategoryId" type="hidden" />
+                            <input asp-for="CreatedDate" type="hidden" />
+                            <div class="card-body">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                                <div class="form-group">
+                                    <label asp-for="Name" class="control-label">Kategori Adı *</label>
+                                    <input asp-for="Name" class="form-control" placeholder="Kategori adını giriniz" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Description" class="control-label">Açıklama</label>
+                                    <textarea asp-for="Description" class="form-control" rows="3" 
+                                              placeholder="Kategori açıklamasını giriniz (isteğe bağlı)"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="SortOrder" class="control-label">Sıra Numarası</label>
+                                            <input asp-for="SortOrder" class="form-control" type="number" min="0" />
+                                            <small class="form-text text-muted">Kategorilerin sıralanması için kullanılır</small>
+                                            <span asp-validation-for="SortOrder" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox mt-4">
+                                                <input asp-for="IsActive" class="custom-control-input" />
+                                                <label asp-for="IsActive" class="custom-control-label">Aktif</label>
+                                            </div>
+                                            <small class="form-text text-muted">Kategorinin görünür olup olmayacağını belirler</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Güncelle
+                                </button>
+                                <a asp-action="Index" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Geri Dön
+                                </a>
+                                <a asp-action="Details" asp-route-id="@Model.CategoryId" class="btn btn-info">
+                                    <i class="fas fa-eye"></i> Detaylar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-info-circle"></i> Kategori Bilgileri
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Oluşturma Tarihi:</strong> @Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</p>
+                            @if (Model.UpdatedDate.HasValue)
+                            {
+                                <p><strong>Güncelleme Tarihi:</strong> @Model.UpdatedDate.Value.ToString("dd.MM.yyyy HH:mm")</p>
+                            }
+                            <p><strong>Blog Sayısı:</strong> @(Model.BlogPosts?.Count ?? 0)</p>
+                            <p><strong>Durum:</strong> 
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge badge-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">Pasif</span>
+                                }
+                            </p>
+                            
+                            @if (Model.BlogPosts?.Any() == true)
+                            {
+                                <hr>
+                                <h6>Bu Kategorideki Blog Yazıları:</h6>
+                                <ul class="list-unstyled">
+                                    @foreach (var post in Model.BlogPosts.Take(5))
+                                    {
+                                        <li class="text-sm">
+                                            <i class="fas fa-blog fa-sm"></i> @post.Title
+                                        </li>
+                                    }
+                                    @if (Model.BlogPosts.Count > 5)
+                                    {
+                                        <li class="text-sm text-muted">
+                                            ... ve @(Model.BlogPosts.Count - 5) adet daha
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            var originalName = '@Model.Name';
+            
+            // Real-time name validation
+            $('#Name').on('blur', function() {
+                var name = $(this).val();
+                if (name && name !== originalName) {
+                    $.get('@Url.Action("CheckName")', { name: name, id: @Model.CategoryId }, function(data) {
+                        if (!data) {
+                            $('#Name').addClass('is-invalid');
+                            if ($('#Name').next('.invalid-feedback').length === 0) {
+                                $('#Name').after('<div class="invalid-feedback">Bu kategori adı zaten kullanılıyor</div>');
+                            }
+                        } else {
+                            $('#Name').removeClass('is-invalid');
+                            $('#Name').next('.invalid-feedback').remove();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

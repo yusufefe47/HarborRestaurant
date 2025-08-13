@@ -1,0 +1,206 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.ContactMessage>
+
+@{
+    ViewData["Title"] = "İletişim Mesajları";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">İletişim Mesajları</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/Admin">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">İletişim Mesajları</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">İletişim Mesajları Listesi</h3>
+                    <div class="card-tools">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-info btn-sm" id="markReadBtn" disabled>
+                                <i class="fas fa-check"></i> Okundu İşaretle
+                            </button>
+                            <button type="button" class="btn btn-warning btn-sm" id="markUnreadBtn" disabled>
+                                <i class="fas fa-undo"></i> Okunmadı İşaretle
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" id="deleteSelectedBtn" disabled>
+                                <i class="fas fa-trash"></i> Seçilenleri Sil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form id="bulkActionForm" method="post" asp-action="BulkAction">
+                        <table id="messagesTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="selectAll">
+                                    </th>
+                                    <th>Durum</th>
+                                    <th>Ad Soyad</th>
+                                    <th>E-posta</th>
+                                    <th>Konu</th>
+                                    <th>Tarih</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr class="@(item.IsRead ? "" : "table-warning")">
+                                        <td>
+                                            <input type="checkbox" name="selectedIds" value="@item.ContactMessageId" class="message-checkbox">
+                                        </td>
+                                        <td>
+                                            @if (!item.IsRead)
+                                            {
+                                                <span class="badge badge-warning">Okunmadı</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-success">Okundu</span>
+                                            }
+                                            @if (item.IsReplied)
+                                            {
+                                                <span class="badge badge-info">Yanıtlandı</span>
+                                            }
+                                        </td>
+                                        <td>@item.FullName</td>
+                                        <td>@item.Email</td>
+                                        <td>@item.Subject</td>
+                                        <td>@item.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a asp-action="Details" asp-route-id="@item.ContactMessageId" class="btn btn-info btn-sm" title="Detaylar">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                @if (!item.IsRead)
+                                                {
+                                                    <button type="button" class="btn btn-success btn-sm mark-read" data-id="@item.ContactMessageId" title="Okundu İşaretle">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="button" class="btn btn-warning btn-sm mark-unread" data-id="@item.ContactMessageId" title="Okunmadı İşaretle">
+                                                        <i class="fas fa-undo"></i>
+                                                    </button>
+                                                }
+                                                @if (!item.IsReplied)
+                                                {
+                                                    <button type="button" class="btn btn-primary btn-sm mark-replied" data-id="@item.ContactMessageId" title="Yanıtlandı İşaretle">
+                                                        <i class="fas fa-reply"></i>
+                                                    </button>
+                                                }
+                                                <a asp-action="Delete" asp-route-id="@item.ContactMessageId" class="btn btn-danger btn-sm" title="Sil">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#messagesTable').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "order": [[5, "desc"]],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+                }
+            });
+
+            // Tümünü seç/bırak
+            $('#selectAll').change(function() {
+                $('.message-checkbox').prop('checked', this.checked);
+                toggleBulkButtons();
+            });
+
+            // Checkbox değişikliklerini izle
+            $('.message-checkbox').change(function() {
+                toggleBulkButtons();
+            });
+
+            // Toplu işlem butonlarını aktif/pasif yap
+            function toggleBulkButtons() {
+                var checkedCount = $('.message-checkbox:checked').length;
+                $('#markReadBtn, #markUnreadBtn, #deleteSelectedBtn').prop('disabled', checkedCount === 0);
+            }
+
+            // Toplu işlemler
+            $('#markReadBtn').click(function() {
+                submitBulkAction('markRead');
+            });
+
+            $('#markUnreadBtn').click(function() {
+                submitBulkAction('markUnread');
+            });
+
+            $('#deleteSelectedBtn').click(function() {
+                if (confirm('Seçili mesajları silmek istediğinizden emin misiniz?')) {
+                    submitBulkAction('delete');
+                }
+            });
+
+            function submitBulkAction(action) {
+                $('#bulkActionForm').append('<input type="hidden" name="action" value="' + action + '">');
+                $('#bulkActionForm').submit();
+            }
+
+            // Tekil işlemler
+            $('.mark-read').click(function() {
+                var id = $(this).data('id');
+                var row = $(this).closest('tr');
+                $.post('/Admin/ContactMessages/MarkAsRead', { id: id }, function(data) {
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
+            });
+
+            $('.mark-unread').click(function() {
+                var id = $(this).data('id');
+                var row = $(this).closest('tr');
+                $.post('/Admin/ContactMessages/MarkAsUnread', { id: id }, function(data) {
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
+            });
+
+            $('.mark-replied').click(function() {
+                var id = $(this).data('id');
+                var row = $(this).closest('tr');
+                $.post('/Admin/ContactMessages/MarkAsReplied', { id: id }, function(data) {
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
+            });
+        });
+    </script>
+}

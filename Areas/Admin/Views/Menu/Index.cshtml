@@ -1,0 +1,162 @@
+ @{
+    ViewData["Title"] = "Menü Yönetimi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-utensils me-2"></i>Menü Yönetimi
+    </h1>
+</div>
+
+<!-- İstatistik Kartları -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Toplam Kategori</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalCategories</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-list fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Toplam Ürün</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalItems</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-utensils fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Aktif Ürünler</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.ActiveItems</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pasif Ürünler</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.InactiveItems</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hızlı Eylemler -->
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-list me-2"></i>Kategori Yönetimi
+                </h6>
+            </div>
+            <div class="card-body">
+                <p class="text-gray-600">Menü kategorilerini yönetin, yeni kategori ekleyin veya mevcut kategorileri düzenleyin.</p>
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("Categories", "Menu")" class="btn btn-primary">
+                        <i class="fas fa-eye me-1"></i>Kategorileri Görüntüle
+                    </a>
+                    <a href="@Url.Action("CreateCategory", "Menu")" class="btn btn-success">
+                        <i class="fas fa-plus me-1"></i>Yeni Kategori
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-success">
+                    <i class="fas fa-utensils me-2"></i>Ürün Yönetimi
+                </h6>
+            </div>
+            <div class="card-body">
+                <p class="text-gray-600">Menü ürünlerini yönetin, yeni ürün ekleyin veya mevcut ürünleri düzenleyin.</p>
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("Items", "Menu")" class="btn btn-primary">
+                        <i class="fas fa-eye me-1"></i>Ürünleri Görüntüle
+                    </a>
+                    <a href="@Url.Action("CreateItem", "Menu")" class="btn btn-success">
+                        <i class="fas fa-plus me-1"></i>Yeni Ürün
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Son Eklenen Kategoriler ve Ürünler -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-info">
+                    <i class="fas fa-chart-line me-2"></i>Hızlı Erişim
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center p-3 border rounded">
+                            <i class="fas fa-chart-bar fa-3x text-primary mb-3"></i>
+                            <h5>Menü Raporları</h5>
+                            <p class="text-muted">En çok satan ürünler ve kategori performansları</p>
+                            <a href="#" class="btn btn-outline-primary btn-sm">Yakında</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3 border rounded">
+                            <i class="fas fa-tags fa-3x text-warning mb-3"></i>
+                            <h5>Fiyat Yönetimi</h5>
+                            <p class="text-muted">Toplu fiyat güncelleme ve indirim yönetimi</p>
+                            <a href="#" class="btn btn-outline-warning btn-sm">Yakında</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3 border rounded">
+                            <i class="fas fa-file-export fa-3x text-success mb-3"></i>
+                            <h5>Menü Dışa Aktar</h5>
+                            <p class="text-muted">Menüyü PDF veya Excel formatında dışa aktarın</p>
+                            <a href="#" class="btn btn-outline-success btn-sm">Yakında</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

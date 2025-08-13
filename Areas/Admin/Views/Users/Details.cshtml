@@ -1,0 +1,227 @@
+@model HarborRestaurant.Models.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Kullanıcı Detayları";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Kullanıcı Detayları</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard")">Ana Sayfa</a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Users")">Kullanıcı Yönetimi</a></li>
+                        <li class="breadcrumb-item active">Detaylar</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">@Model.FullName</h3>
+                            <div class="card-tools">
+                                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> Düzenle
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <th>Ad Soyad:</th>
+                                            <td>@Model.FullName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Kullanıcı Adı:</th>
+                                            <td>@Model.UserName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>E-posta:</th>
+                                            <td>@Model.Email</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Telefon:</th>
+                                            <td>@(Model.PhoneNumber ?? "-")</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <th>Durum:</th>
+                                            <td>
+                                                @if (Model.IsActive)
+                                                {
+                                                    <span class="badge badge-success">Aktif</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-danger">Pasif</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>E-posta Onayı:</th>
+                                            <td>
+                                                @if (Model.EmailConfirmed)
+                                                {
+                                                    <span class="badge badge-success"><i class="fas fa-check"></i> Onaylı</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-warning"><i class="fas fa-times"></i> Bekliyor</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Roller:</th>
+                                            <td>
+                                                @if (Model.Roles.Any())
+                                                {
+                                                    @foreach (var role in Model.Roles)
+                                                    {
+                                                        <span class="badge badge-@(role == "Admin" ? "danger" : "info") mr-1">@role</span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-secondary">Rol Yok</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Kayıt Tarihi:</th>
+                                            <td>@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Geri Dön
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </a>
+                            @if (!Model.Roles.Contains("Admin"))
+                            {
+                                <a asp-action="ChangePassword" asp-route-id="@Model.Id" class="btn btn-primary">
+                                    <i class="fas fa-key"></i> Şifre Değiştir
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Hızlı İşlemler</h3>
+                        </div>
+                        <div class="card-body">
+                            @if (!Model.Roles.Contains("Admin"))
+                            {
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-@(Model.IsActive ? "danger" : "success") btn-block toggle-status" 
+                                            data-user-id="@Model.Id">
+                                        <i class="fas fa-@(Model.IsActive ? "ban" : "check")"></i> 
+                                        @(Model.IsActive ? "Pasif Yap" : "Aktif Yap")
+                                    </button>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-danger btn-block delete-user" 
+                                            data-user-id="@Model.Id">
+                                        <i class="fas fa-trash"></i> Kullanıcıyı Sil
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> Admin kullanıcısı için kısıtlı işlemler mevcuttur.
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">Kullanıcı İstatistikleri</h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Kayıt:</strong> @((DateTime.Now - Model.CreatedDate).Days) gün önce</p>
+                            <p><strong>Durum:</strong> @(Model.IsActive ? "Aktif" : "Pasif")</p>
+                            <p><strong>Rol Sayısı:</strong> @Model.Roles.Count</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Toggle Status
+            $('.toggle-status').click(function () {
+                var userId = $(this).data('user-id');
+                
+                if (confirm('Kullanıcının durumunu değiştirmek istediğinizden emin misiniz?')) {
+                    $.post('@Url.Action("ToggleStatus")', { id: userId, __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() })
+                        .done(function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                setTimeout(function () { location.reload(); }, 1000);
+                            } else {
+                                toastr.error(data.message);
+                            }
+                        })
+                        .fail(function () {
+                            toastr.error('İşlem sırasında bir hata oluştu.');
+                        });
+                }
+            });
+
+            // Delete User
+            $('.delete-user').click(function () {
+                var userId = $(this).data('user-id');
+                
+                if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+                    $.post('@Url.Action("Delete")', { id: userId, __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() })
+                        .done(function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                setTimeout(function () { 
+                                    window.location.href = '@Url.Action("Index")';
+                                }, 1000);
+                            } else {
+                                toastr.error(data.message);
+                            }
+                        })
+                        .fail(function () {
+                            toastr.error('İşlem sırasında bir hata oluştu.');
+                        });
+                }
+            });
+        });
+    </script>
+}
+
+@* Anti-forgery token for AJAX requests *@
+@Html.AntiForgeryToken()

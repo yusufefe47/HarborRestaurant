@@ -1,0 +1,239 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.MenuItem>
+@{
+    ViewData["Title"] = "Menü Öğeleri";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-utensils me-2"></i>Menü Öğeleri
+    </h1>
+    <div>
+        <a href="@Url.Action("Index", "Menu")" class="btn btn-secondary me-2">
+            <i class="fas fa-arrow-left me-1"></i>Geri Dön
+        </a>
+        <a href="@Url.Action("CreateItem")" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Yeni Ürün Ekle
+        </a>
+    </div>
+</div>
+
+<!-- Kategori Filtreleme -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <label class="form-label">Kategoriye Göre Filtrele:</label>
+                <select id="categoryFilter" class="form-select">
+                    <option value="">Tüm Kategoriler</option>
+                    @if (ViewBag.Categories != null)
+                    {
+                        @foreach (var category in (ViewBag.Categories as IEnumerable<HarborRestaurant.Entities.Concrete.MenuCategory>) ?? Enumerable.Empty<HarborRestaurant.Entities.Concrete.MenuCategory>())
+                        {
+                            if (ViewBag.SelectedCategoryId == category.CategoryId) {
+                                <option value="@Url.Action("Items", new { categoryId = category.CategoryId })" selected>
+                                    @category.Name
+                                </option>
+                            } else {
+                                <option value="@Url.Action("Items", new { categoryId = category.CategoryId })">
+                                    @category.Name
+                                </option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-6 text-end">
+                <span class="badge bg-info fs-6">Toplam: @Model.Count() ürün</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Ürün Listesi</h6>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Resim</th>
+                            <th>Ürün Adı</th>
+                            <th>Kategori</th>
+                            <th>Fiyat</th>
+                            <th>Durum</th>
+                            <th>Popüler</th>
+                            <th>Oluşturma</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" alt="@item.Name" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                            <i class="fas fa-image text-muted"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <strong>@item.Name</strong>
+                                    @if (!string.IsNullOrEmpty(item.Description))
+                                    {
+                                        <br><small class="text-muted">@(item.Description.Length > 50 ? item.Description.Substring(0, 50) + "..." : item.Description)</small>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Category != null)
+                                    {
+                                        <span class="badge bg-secondary">@item.Category.Name</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">Kategori Yok</span>
+                                    }
+                                </td>
+                                <td>
+                                    <strong class="text-success">₺@item.Price.ToString("F2")</strong>
+                                </td>
+                                <td>
+                                    @if (item.IsAvailable)
+                                    {
+                                        <span class="badge bg-success">Müsait</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Müsait Değil</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsFeatured)
+                                    {
+                                        <i class="fas fa-star text-warning" title="Popüler"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-star text-muted" title="Normal"></i>
+                                    }
+                                </td>
+                                <td>
+                                    <small>@item.CreatedDate.ToString("dd.MM.yyyy")</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="@Url.Action("EditItem", new { id = item.ItemId })" 
+                                           class="btn btn-sm btn-outline-primary" title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                onclick="deleteItem(@item.ItemId, '@item.Name')" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-4">
+                <i class="fas fa-utensils fa-3x text-gray-300 mb-3"></i>
+                @if (ViewBag.SelectedCategoryId != null)
+                {
+                    <h5 class="text-gray-600">Bu kategoride ürün bulunmuyor</h5>
+                    <p class="text-gray-500">Seçili kategoriye ürün eklemek için "Yeni Ürün Ekle" butonuna tıklayın.</p>
+                }
+                else
+                {
+                    <h5 class="text-gray-600">Henüz ürün bulunmuyor</h5>
+                    <p class="text-gray-500">İlk ürünü oluşturmak için "Yeni Ürün Ekle" butonuna tıklayın.</p>
+                }
+                <a href="@Url.Action("CreateItem")" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Yeni Ürün Ekle
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ürün Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bu ürünü silmek istediğinizden emin misiniz?</p>
+                <p><strong id="itemName"></strong></p>
+                <p class="text-danger"><small><i class="fas fa-exclamation-triangle"></i> Bu işlem geri alınamaz ve ürün resmi de silinecektir!</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>Sil
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function deleteItem(id, name) {
+            document.getElementById('itemName').textContent = name;
+            document.getElementById('deleteForm').action = '@Url.Action("DeleteItem")' + '/' + id;
+            
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
+        }
+
+        // Category filter
+        $('#categoryFilter').on('change', function() {
+            var url = $(this).val();
+            if (url) {
+                window.location.href = url;
+            } else {
+                window.location.href = '@Url.Action("Items")';
+            }
+        });
+
+        // DataTable initialization
+        $(document).ready(function() {
+            if ($('#dataTable tbody tr').length > 0) {
+                $('#dataTable').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+                    },
+                    "pageLength": 15,
+                    "order": [[6, "desc"]], // Order by creation date
+                    "columnDefs": [
+                        { "orderable": false, "targets": [0, 7] } // Disable ordering for image and actions columns
+                    ]
+                });
+            }
+        });
+    </script>
+    
+    <!-- DataTables CSS & JS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+}

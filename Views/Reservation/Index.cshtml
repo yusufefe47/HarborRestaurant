@@ -1,0 +1,165 @@
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<HarborRestaurant.SharedResource> Localizer
+@model HarborRestaurant.Models.ViewModels.ReservationViewModel
+
+@{
+    ViewData["Title"] = Localizer["Reservation.Title"];
+}
+
+<!-- Hero Section -->
+<section class="hero-wrap hero-wrap-2" style="background-image: url('/images/bg_3.jpg');" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-end justify-content-center">
+            <div class="col-md-9 ftco-animate text-center mb-4">
+                <h1 class="mb-0 bread">@Localizer["Reservation.Title"]</h1>
+                <p class="breadcrumbs">
+                    <span class="mr-2"><a href="@Url.Action("Index", "Home")">@Localizer["Nav.Home"] <i class="ion-ios-arrow-forward"></i></a></span>
+                    <span>@Localizer["Reservation.Title"] <i class="ion-ios-arrow-forward"></i></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Reservation Section -->
+<section class="ftco-section ftco-no-pt ftco-no-pb">
+    <div class="container">
+        <div class="row d-flex">
+            <div class="col-md-5 ftco-animate img img-2" style="background-image: url('/images/bg_4.jpg');"></div>
+            <div class="col-md-7 ftco-animate makereservation p-4 p-md-5">
+                <div class="heading-section ftco-animate mb-5">
+                    <span class="subheading">@Localizer["Reservation.MakeReservation"]</span>
+                    <h2 class="mb-4">@Localizer["Reservation.Title"]</h2>
+                </div>
+                @if (ViewData["SelectedRoomName"] != null)
+                {
+                    <div class="alert alert-info d-flex justify-content-between align-items-center" role="alert">
+                        <div>
+                            <i class="fas fa-door-open me-2"></i>
+                            @Localizer["Reservation.SelectedRoom"]: <strong>@ViewData["SelectedRoomName"]</strong>
+                        </div>
+                        <a class="text-decoration-underline small" href="@Url.Action("Index", "Rooms")">@Localizer["Rooms.ViewDetails"]</a>
+                    </div>
+                }
+                
+                @if (ViewData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @ViewData["SuccessMessage"]
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
+
+                @if (ViewData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @ViewData["ErrorMessage"]
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
+
+                <form method="post" asp-action="Create">
+                    @if (Model?.RoomId != null)
+                    {
+                        <input type="hidden" name="RoomId" value="@Model.RoomId" />
+                    }
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="FullName">@Localizer["Reservation.FullName"] *</label>
+                                <input type="text" asp-for="FullName" class="form-control" placeholder="@Localizer["Reservation.FullName"]">
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Email">@Localizer["Reservation.Email"] *</label>
+                                <input type="email" asp-for="Email" class="form-control" placeholder="@Localizer["Reservation.Email"]">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Phone">@Localizer["Reservation.Phone"] *</label>
+                                <input type="tel" asp-for="Phone" class="form-control" placeholder="@Localizer["Reservation.Phone"]">
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="GuestCount">@Localizer["Reservation.GuestCount"] *</label>
+                                <select asp-for="GuestCount" class="form-control">
+                                    <option value="">@Localizer["Common.Select"]</option>
+                                    <option value="1">1 @Localizer["Common.Person"]</option>
+                                    <option value="2">2 @Localizer["Common.Person"]</option>
+                                    <option value="3">3 @Localizer["Common.Person"]</option>
+                                    <option value="4">4 @Localizer["Common.Person"]</option>
+                                    <option value="5">5 @Localizer["Common.Person"]</option>
+                                    <option value="6">6 @Localizer["Common.Person"]</option>
+                                    <option value="7">7 @Localizer["Common.Person"]</option>
+                                    <option value="8">8 @Localizer["Common.Person"]</option>
+                                    <option value="9">9+ @Localizer["Common.Person"]</option>
+                                </select>
+                                <span asp-validation-for="GuestCount" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="CheckInDate">@Localizer["Reservation.CheckIn"] *</label>
+                                <input type="date" asp-for="CheckInDate" class="form-control">
+                                <span asp-validation-for="CheckInDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="CheckOutDate">@Localizer["Reservation.CheckOut"] *</label>
+                                <input type="date" asp-for="CheckOutDate" class="form-control">
+                                <span asp-validation-for="CheckOutDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ReservationTime">@Localizer["Reservation.Time"] *</label>
+                                <input type="time" asp-for="ReservationTime" class="form-control">
+                                <span asp-validation-for="ReservationTime" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="SpecialRequest">@Localizer["Reservation.SpecialRequests"]</label>
+                                <textarea asp-for="SpecialRequest" cols="30" rows="5" class="form-control" placeholder="@Localizer["Reservation.SpecialRequestsPlaceholder"]"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary p-3 px-xl-4 py-xl-3">@Localizer["Reservation.MakeReservation"]</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function(){
+            // Minimum tarih ayarlamaları
+            var today = new Date().toISOString().split('T')[0];
+            $('input[type="date"]').attr('min', today);
+            
+            // Çıkış tarihi, giriş tarihinden sonra olmalı
+            $('input[name="CheckInDate"]').on('change', function() {
+                var checkInDate = $(this).val();
+                $('input[name="CheckOutDate"]').attr('min', checkInDate);
+            });
+        });
+    </script>
+}

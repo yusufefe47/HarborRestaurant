@@ -1,0 +1,158 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.MenuCategory>
+@{
+    ViewData["Title"] = "Menü Kategorileri";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-list me-2"></i>Menü Kategorileri
+    </h1>
+    <div>
+        <a href="@Url.Action("Index", "Menu")" class="btn btn-secondary me-2">
+            <i class="fas fa-arrow-left me-1"></i>Geri Dön
+        </a>
+        <a href="@Url.Action("CreateCategory")" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Yeni Kategori Ekle
+        </a>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Kategori Listesi</h6>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Kategori Adı</th>
+                            <th>Açıklama</th>
+                            <th>Aktif</th>
+                            <th>Sıralama</th>
+                            <th>Oluşturma Tarihi</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.CategoryId</td>
+                                <td>
+                                    <strong>@item.Name</strong>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Description))
+                                    {
+                                        <small class="text-muted">@(item.Description.Length > 50 ? item.Description.Substring(0, 50) + "..." : item.Description)</small>
+                                    }
+                                    else
+                                    {
+                                        <small class="text-muted">-</small>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Pasif</span>
+                                    }
+                                </td>
+                                <td>@item.DisplayOrder</td>
+                                <td>
+                                    <small>@item.CreatedDate.ToString("dd.MM.yyyy HH:mm")</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="@Url.Action("EditCategory", new { id = item.CategoryId })" 
+                                           class="btn btn-sm btn-outline-primary" title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                onclick="deleteCategory(@item.CategoryId, '@item.Name')" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-4">
+                <i class="fas fa-list fa-3x text-gray-300 mb-3"></i>
+                <h5 class="text-gray-600">Henüz kategori bulunmuyor</h5>
+                <p class="text-gray-500">İlk kategoriyi oluşturmak için "Yeni Kategori Ekle" butonuna tıklayın.</p>
+                <a href="@Url.Action("CreateCategory")" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>İlk Kategoriyi Oluştur
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Kategori Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bu kategoriyi silmek istediğinizden emin misiniz?</p>
+                <p><strong id="categoryName"></strong></p>
+                <p class="text-danger"><small><i class="fas fa-exclamation-triangle"></i> Bu işlem geri alınamaz!</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>Sil
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function deleteCategory(id, name) {
+            document.getElementById('categoryName').textContent = name;
+            document.getElementById('deleteForm').action = '@Url.Action("DeleteCategory")' + '/' + id;
+            
+            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
+        }
+
+        // DataTable initialization
+        $(document).ready(function() {
+            if ($('#dataTable tbody tr').length > 0) {
+                $('#dataTable').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+                    },
+                    "pageLength": 25,
+                    "order": [[0, "desc"]]
+                });
+            }
+        });
+    </script>
+    
+    <!-- DataTables CSS & JS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+}

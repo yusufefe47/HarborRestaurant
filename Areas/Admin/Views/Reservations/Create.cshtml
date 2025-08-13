@@ -1,0 +1,177 @@
+@model HarborRestaurant.Entities.Concrete.Reservation
+@{
+    ViewData["Title"] = "Yeni Rezervasyon Oluştur";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-plus-circle me-2"></i>Yeni Rezervasyon Oluştur
+    </h1>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i>Geri Dön
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Rezervasyon Bilgileri</h6>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="FullName" class="form-label">Ad Soyad *</label>
+                            <input asp-for="FullName" class="form-control" placeholder="Müşteri adı soyadı" required />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label">E-posta *</label>
+                            <input asp-for="Email" class="form-control" type="email" placeholder="ornek@email.com" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label">Telefon *</label>
+                            <input asp-for="Phone" class="form-control" placeholder="0532 123 45 67" required />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="GuestCount" class="form-label">Kişi Sayısı *</label>
+                            <input asp-for="GuestCount" class="form-control" type="number" min="1" max="20" required />
+                            <span asp-validation-for="GuestCount" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="CheckInDate" class="form-label">Giriş Tarihi *</label>
+                            <input asp-for="CheckInDate" class="form-control" type="date" required />
+                            <span asp-validation-for="CheckInDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ReservationTime" class="form-label">Rezervasyon Saati *</label>
+                            <input asp-for="ReservationTime" class="form-control" type="time" required />
+                            <span asp-validation-for="ReservationTime" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label">Durum</label>
+                            <select asp-for="Status" class="form-select">
+                                @foreach (var status in (ViewBag.ReservationStatuses as HarborRestaurant.Entities.Enums.ReservationStatus[]) ?? Array.Empty<HarborRestaurant.Entities.Enums.ReservationStatus>())
+                                {
+                                    <option value="@status">@(status switch
+                                    {
+                                        HarborRestaurant.Entities.Enums.ReservationStatus.Pending => "Bekliyor",
+                                        HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed => "Onaylandı",
+                                        HarborRestaurant.Entities.Enums.ReservationStatus.Completed => "Tamamlandı",
+                                        HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled => "İptal Edildi",
+                                        _ => "Bilinmiyor"
+                                    })</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="TableId" class="form-label">Masa</label>
+                            <select asp-for="TableId" class="form-select">
+                                <option value="">Masa seçiniz (opsiyonel)</option>
+                                @if (ViewBag.Tables != null)
+                                {
+                                    @foreach (dynamic table in (ViewBag.Tables as IEnumerable<object>) ?? Enumerable.Empty<object>())
+                                    {
+                                                                    <option value="@table.TableId">Masa @table.TableNumber (@table.Capacity kişilik) - @(table.IsAvailable ? "Müsait" : "Dolu")</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="TableId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="SpecialRequests" class="form-label">Özel İstekler</label>
+                        <textarea asp-for="SpecialRequests" class="form-control" rows="3" placeholder="Özel istekler, alerji bilgileri vb."></textarea>
+                        <span asp-validation-for="SpecialRequests" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AdminNotes" class="form-label">Yönetici Notları</label>
+                        <textarea asp-for="AdminNotes" class="form-control" rows="2" placeholder="İç notlar (müşteri görmez)"></textarea>
+                        <span asp-validation-for="AdminNotes" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Index" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times me-1"></i>İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Rezervasyon Oluştur
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-info">Bilgilendirme</h6>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <i class="fas fa-info-circle fa-2x text-info mb-3"></i>
+                    <h5>Rezervasyon Kuralları</h5>
+                </div>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Minimum 1 kişi, maksimum 20 kişi</li>
+                    <li><i class="fas fa-check text-success me-2"></i>En az 2 saat önceden rezervasyon</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Çalışma saatleri: 09:00 - 23:00</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Özel günlerde farklı şartlar geçerli</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-warning">Durumlar</h6>
+            </div>
+            <div class="card-body">
+                <small class="text-muted">
+                    <strong>Bekliyor:</strong> Yeni rezervasyon<br>
+                    <strong>Onaylandı:</strong> Rezervasyon onaylandı<br>
+                    <strong>Tamamlandı:</strong> Müşteri geldi<br>
+                    <strong>İptal Edildi:</strong> Rezervasyon iptal
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            // Set minimum date to today
+            var today = new Date().toISOString().split('T')[0];
+            $('input[type="date"]').attr('min', today);
+            
+            // Set default date to today if empty
+            if (!$('input[type="date"]').val()) {
+                $('input[type="date"]').val(today);
+            }
+            
+            // Set default time if empty
+            if (!$('input[type="time"]').val()) {
+                $('input[type="time"]').val('19:00');
+            }
+        });
+    </script>
+}

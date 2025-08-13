@@ -1,0 +1,508 @@
+@model HarborRestaurant.Entities.Concrete.BlogPost
+@{
+    ViewData["Title"] = "Blog Yazısı Detay";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Blog Yazısı Detay</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Home")">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("Posts", "Blog")">Blog Yazıları</a></li>
+                        <li class="breadcrumb-item active">Detay</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-eye"></i> @Model.Title
+                            </h3>
+                            <div class="card-tools">
+                                <a href="@Url.Action("EditPost", "Blog", new { id = Model.PostId })" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> Düzenle
+                                </a>
+                                <a href="@Url.Action("Posts", "Blog")" class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-list"></i> Yazılar Listesi
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Ana İçerik -->
+                                <div class="col-md-8">
+                                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                    {
+                                        <div class="mb-4">
+                                            <img src="@Model.ImageUrl" class="img-fluid rounded" alt="@Model.Title" style="max-height: 400px; width: 100%; object-fit: cover;">
+                                        </div>
+                                    }
+
+                                    <div class="article-meta mb-4">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <span class="badge badge-info">
+                                                    <i class="fas fa-tag"></i> 
+                                                    @(Model.Category?.Name ?? "Kategori Yok")
+                                                </span>
+                                                @if (Model.IsFeatured)
+                                                {
+                                                    <span class="badge badge-warning ml-2">
+                                                        <i class="fas fa-star"></i> Öne Çıkan
+                                                    </span>
+                                                }
+                                                <span class="badge badge-@(Model.IsActive ? "success" : "danger") ml-2">
+                                                    <i class="fas fa-@(Model.IsActive ? "check" : "times")"></i> 
+                                                    @(Model.IsActive ? "Aktif" : "Pasif")
+                                                </span>
+                                            </div>
+                                            <div class="col-md-6 text-right">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-eye"></i> @Model.ViewCount görüntüleme
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @if (!string.IsNullOrEmpty(Model.Summary))
+                                    {
+                                        <div class="alert alert-info">
+                                            <h5><i class="fas fa-info-circle"></i> Özet</h5>
+                                            <p class="mb-0">@Model.Summary</p>
+                                        </div>
+                                    }
+
+                                    <div class="article-content">
+                                        <h4>İçerik</h4>
+                                        <div class="border p-3 rounded bg-light">
+                                            @Html.Raw(Model.Content)
+                                        </div>
+                                    </div>
+
+                                    <!-- SEO Bilgileri -->
+                                    @if (!string.IsNullOrEmpty(Model.MetaTitle) || !string.IsNullOrEmpty(Model.MetaDescription))
+                                    {
+                                        <div class="mt-4">
+                                            <h5><i class="fas fa-search"></i> SEO Bilgileri</h5>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    @if (!string.IsNullOrEmpty(Model.MetaTitle))
+                                                    {
+                                                        <p><strong>Meta Başlık:</strong> @Model.MetaTitle</p>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(Model.MetaDescription))
+                                                    {
+                                                        <p><strong>Meta Açıklama:</strong> @Model.MetaDescription</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Yan Panel -->
+                                <div class="col-md-4">
+                                    <!-- Yazar Bilgileri -->
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="card-title">
+                                                <i class="fas fa-user"></i> Yazar Bilgileri
+                                            </h5>
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <img src="/images/default-avatar.png" class="rounded-circle mb-3" width="80" height="80" alt="@Model.Author">
+                                            <h6>@Model.Author</h6>
+                                            <p class="text-muted small">Admin</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Yazı İstatistikleri -->
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="card-title">
+                                                <i class="fas fa-chart-bar"></i> İstatistikler
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-unstyled">
+                                                <li class="mb-2">
+                                                    <i class="fas fa-calendar text-primary"></i>
+                                                    <strong>Oluşturulma:</strong><br>
+                                                    <small>@Model.CreatedDate.ToString("dd MMMM yyyy, HH:mm")</small>
+                                                </li>
+                                                @if (Model.UpdatedDate.HasValue)
+                                                {
+                                                    <li class="mb-2">
+                                                        <i class="fas fa-edit text-warning"></i>
+                                                        <strong>Son Güncelleme:</strong><br>
+                                                        <small>@Model.UpdatedDate.Value.ToString("dd MMMM yyyy, HH:mm")</small>
+                                                    </li>
+                                                }
+                                                @if (Model.PublishedDate.HasValue)
+                                                {
+                                                    <li class="mb-2">
+                                                        <i class="fas fa-globe text-success"></i>
+                                                        <strong>Yayın Tarihi:</strong><br>
+                                                        <small>@Model.PublishedDate.Value.ToString("dd MMMM yyyy, HH:mm")</small>
+                                                    </li>
+                                                }
+                                                <li class="mb-2">
+                                                    <i class="fas fa-eye text-info"></i>
+                                                    <strong>Görüntüleme:</strong>
+                                                    <span class="float-right badge badge-secondary">@Model.ViewCount</span>
+                                                </li>
+                                                <li class="mb-2">
+                                                    <i class="fas fa-text-width text-secondary"></i>
+                                                    <strong>Karakter Sayısı:</strong>
+                                                    <span class="float-right badge badge-secondary">
+                                                        @(Model.Content?.Length ?? 0)
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hızlı İşlemler -->
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="card-title">
+                                                <i class="fas fa-tools"></i> Hızlı İşlemler
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-grid gap-2">
+                                                <a href="@Url.Action("EditPost", "Blog", new { id = Model.PostId })" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i> Düzenle
+                                                </a>
+                                                <a href="@Url.Action("Detail", "Blog", new { id = Model.PostId })" target="_blank" class="btn btn-info btn-sm">
+                                                    <i class="fas fa-external-link-alt"></i> Site'de Görüntüle
+                                                </a>
+                                                @if (Model.IsActive)
+                                                {
+                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleStatus(@Model.PostId, false)">
+                                                        <i class="fas fa-eye-slash"></i> Pasif Yap
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="button" class="btn btn-success btn-sm" onclick="toggleStatus(@Model.PostId, true)">
+                                                        <i class="fas fa-eye"></i> Aktif Yap
+                                                    </button>
+                                                }
+                                                @if (Model.IsFeatured)
+                                                {
+                                                    <button type="button" class="btn btn-outline-warning btn-sm" onclick="toggleFeatured(@Model.PostId, false)">
+                                                        <i class="fas fa-star-half"></i> Öne Çıkarmayı Kaldır
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="button" class="btn btn-warning btn-sm" onclick="toggleFeatured(@Model.PostId, true)">
+                                                        <i class="fas fa-star"></i> Öne Çıkar
+                                                    </button>
+                                                }
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="deletePost(@Model.PostId)">
+                                                    <i class="fas fa-trash"></i> Sil
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- URL Bilgisi -->
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="card-title">
+                                                <i class="fas fa-link"></i> URL Bilgisi
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control" id="postUrl" 
+                                                       value="@($"{Context.Request.Scheme}://{Context.Request.Host}/Blog/Detail/{Model.PostId}")" readonly>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="copyUrl()">
+                                                        <i class="fas fa-copy"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <small class="text-muted">Bu yazının public URL'si</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a href="@Url.Action("Posts", "Blog")" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Yazılar Listesine Dön
+                                    </a>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <a href="@Url.Action("EditPost", "Blog", new { id = Model.PostId })" class="btn btn-warning">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </a>
+                                    <button type="button" class="btn btn-danger" onclick="deletePost(@Model.PostId)">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        function deletePost(id) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: "Bu blog yazısını silmek istediğinizden emin misiniz?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Evet, Sil!',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Form oluştur ve gönder
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '@Url.Action("DeletePost", "Blog")';
+                    
+                    const idInput = document.createElement('input');
+                    idInput.type = 'hidden';
+                    idInput.name = 'id';
+                    idInput.value = id;
+                    form.appendChild(idInput);
+                    
+                    const tokenInput = document.createElement('input');
+                    tokenInput.type = 'hidden';
+                    tokenInput.name = '__RequestVerificationToken';
+                    tokenInput.value = $('input[name="__RequestVerificationToken"]').val();
+                    form.appendChild(tokenInput);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+
+        function toggleStatus(id, isActive) {
+            const action = isActive ? 'aktif' : 'pasif';
+            Swal.fire({
+                title: `Yazıyı ${action} yapmak istediğinizden emin misiniz?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: isActive ? '#28a745' : '#6c757d',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: `Evet, ${action} yap!`,
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // AJAX ile status güncelleme
+                    $.ajax({
+                        url: '@Url.Action("ToggleStatus", "Blog")',
+                        type: 'POST',
+                        data: {
+                            id: id,
+                            isActive: isActive,
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Başarılı!',
+                                    text: `Yazı ${action} yapıldı.`,
+                                    timer: 1500
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Hata!',
+                                    text: 'İşlem sırasında bir hata oluştu.'
+                                });
+                            }
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata!',
+                                text: 'Sunucu hatası oluştu.'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function toggleFeatured(id, isFeatured) {
+            const action = isFeatured ? 'öne çıkar' : 'öne çıkarmaktan kaldır';
+            Swal.fire({
+                title: `Yazıyı ${action}mak istediğinizden emin misiniz?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: isFeatured ? '#ffc107' : '#6c757d',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: `Evet, ${action}!`,
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // AJAX ile featured güncelleme
+                    $.ajax({
+                        url: '@Url.Action("ToggleFeatured", "Blog")',
+                        type: 'POST',
+                        data: {
+                            id: id,
+                            isFeatured: isFeatured,
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Başarılı!',
+                                    text: `Yazı ${action}ıldı.`,
+                                    timer: 1500
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Hata!',
+                                    text: 'İşlem sırasında bir hata oluştu.'
+                                });
+                            }
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata!',
+                                text: 'Sunucu hatası oluştu.'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function copyUrl() {
+            const urlInput = document.getElementById('postUrl');
+            urlInput.select();
+            urlInput.setSelectionRange(0, 99999); // Mobile devices için
+            
+            navigator.clipboard.writeText(urlInput.value).then(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Kopyalandı!',
+                    text: 'URL başarıyla kopyalandı.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }).catch(function() {
+                // Fallback for older browsers
+                document.execCommand('copy');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Kopyalandı!',
+                    text: 'URL başarıyla kopyalandı.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            // Görüntülenme sayacını artır
+            $.ajax({
+                url: '@Url.Action("IncrementViewCount", "Blog")',
+                type: 'POST',
+                data: {
+                    id: @Model.PostId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    console.log('View count incremented');
+                }
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .article-content h1,
+        .article-content h2,
+        .article-content h3,
+        .article-content h4,
+        .article-content h5,
+        .article-content h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .article-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .article-content blockquote {
+            border-left: 4px solid #007bff;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+        }
+        
+        .card {
+            box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+        }
+        
+        .d-grid.gap-2 > * {
+            margin-bottom: 0.5rem;
+        }
+        
+        .d-grid.gap-2 > *:last-child {
+            margin-bottom: 0;
+        }
+        
+        .badge {
+            font-size: 0.8rem;
+        }
+        
+        .article-meta {
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 1rem;
+        }
+        
+        .input-group-sm .form-control {
+            font-size: 0.875rem;
+        }
+    </style>
+}

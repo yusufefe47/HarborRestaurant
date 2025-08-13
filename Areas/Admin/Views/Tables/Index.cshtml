@@ -1,0 +1,208 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.Table>
+@{
+    ViewData["Title"] = "Masa Yönetimi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-table me-2"></i>Masa Yönetimi
+    </h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i>Yeni Masa Ekle
+    </a>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Toplam Masa</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count()</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-table fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Aktif Masa</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(t => t.IsActive)</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Pasif Masa</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count(t => !t.IsActive)</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-times-circle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Toplam Kapasite</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Where(t => t.IsActive).Sum(t => t.Capacity)</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tables List -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Tüm Masalar</h6>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Masa No</th>
+                            <th>Kapasite</th>
+                            <th>Konum</th>
+                            <th>Durum</th>
+                            <th>Oluşturma Tarihi</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var table in Model)
+                        {
+                            <tr class="@(table.IsActive ? "" : "table-warning")">
+                                <td>
+                                    <strong>@table.TableNumber</strong>
+                                </td>
+                                <td>
+                                    <i class="fas fa-users me-1"></i>@table.Capacity kişi
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(table.Location))
+                                    {
+                                        <i class="fas fa-map-marker-alt me-1"></i>@table.Location
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (table.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Pasif</span>
+                                    }
+                                </td>
+                                <td>
+                                    @table.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@table.TableId" 
+                                           class="btn btn-sm btn-info" title="Detaylar">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@table.TableId" 
+                                           class="btn btn-sm btn-primary" title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form asp-action="ToggleStatus" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@table.TableId" />
+                                            <button type="submit" 
+                                                    class="btn btn-sm @(table.IsActive ? "btn-warning" : "btn-success")" 
+                                                    title="@(table.IsActive ? "Pasif Yap" : "Aktif Yap")"
+                                                    onclick="return confirm('@(table.IsActive ? "Bu masayı pasif yapmak" : "Bu masayı aktif yapmak") istediğinizden emin misiniz?')">
+                                                <i class="fas @(table.IsActive ? "fa-pause" : "fa-play")"></i>
+                                            </button>
+                                        </form>
+                                        <form asp-action="Delete" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@table.TableId" />
+                                            <button type="submit" class="btn btn-sm btn-danger" 
+                                                    title="Sil"
+                                                    onclick="return confirm('Bu masayı kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-table fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Henüz hiç masa eklenmemiş</h5>
+                <p class="text-muted mb-3">Rezervasyon sistemi için masalar eklemeye başlayın.</p>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>İlk Masayı Ekle
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable if there are rows
+            @if (Model.Any())
+            {
+                <text>
+                $('table').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+                    },
+                    "order": [[ 0, "asc" ]],
+                    "columnDefs": [
+                        { "orderable": false, "targets": 5 }
+                    ]
+                });
+                </text>
+            }
+        });
+    </script>
+}

@@ -1,0 +1,241 @@
+@model HarborRestaurant.Entities.Concrete.About
+
+@{
+    ViewData["Title"] = "Hakkımızda Sayfası Düzenle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-info-circle"></i> Hakkımızda Sayfası</h2>
+    <a href="@Url.Action("Index", "Pages")" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Geri Dön
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.AboutId)
+                    
+                    <!-- Tab Navigation -->
+                    <ul class="nav nav-tabs" id="languageTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="tr-tab" data-bs-toggle="tab" data-bs-target="#tr-content" type="button" role="tab">
+                                <i class="fas fa-flag"></i> Türkçe
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="en-tab" data-bs-toggle="tab" data-bs-target="#en-content" type="button" role="tab">
+                                <i class="fas fa-flag"></i> English
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content mt-3" id="languageTabsContent">
+                        <!-- Turkish Content -->
+                        <div class="tab-pane fade show active" id="tr-content" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Başlık (TR) *</label>
+                                        <input asp-for="Title" class="form-control" required />
+                                        <span asp-validation-for="Title" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Alt Başlık (TR)</label>
+                                        <input asp-for="Subtitle" class="form-control" />
+                                        <span asp-validation-for="Subtitle" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Açıklama (TR) *</label>
+                                <textarea asp-for="Description" class="form-control" rows="6" required></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- English Content -->
+                        <div class="tab-pane fade" id="en-content" role="tabpanel">
+                            <div class="alert alert-info">
+                                <i class="fas fa-language"></i> İngilizce alanları ücretsiz otomatik çeviri ile doldurabilir veya manuel olarak düzenleyebilirsiniz.
+                                <button type="button" class="btn btn-sm btn-primary ms-2" onclick="translateAbout()">
+                                    <i class="fas fa-globe"></i> Otomatik Çevir (Ücretsiz)
+                                </button>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Title (EN) *</label>
+                                        <input asp-for="TitleEn" class="form-control" required />
+                                        <span asp-validation-for="TitleEn" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Subtitle (EN)</label>
+                                        <input asp-for="SubtitleEn" class="form-control" />
+                                        <span asp-validation-for="SubtitleEn" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Description (EN) *</label>
+                                <textarea asp-for="DescriptionEn" class="form-control" rows="6" required></textarea>
+                                <span asp-validation-for="DescriptionEn" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Common Fields -->
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Ana Görsel URL</label>
+                                <input asp-for="ImageUrl" class="form-control" />
+                                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                                <small class="form-text text-muted">Örnek: /images/about.jpg</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Video URL (YouTube)</label>
+                                <input asp-for="VideoUrl" class="form-control" />
+                                <span asp-validation-for="VideoUrl" class="text-danger"></span>
+                                <small class="form-text text-muted">YouTube video linki</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                                    <label asp-for="IsActive" class="form-check-label">
+                                        Aktif
+                                    </label>
+                                </div>
+                                <small class="form-text text-muted">Bu sayfa sitede görünür olsun mu?</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Kaydet
+                        </button>
+                        <a href="@Url.Action("Index", "Pages")" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model?.ImageUrl))
+{
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-image"></i> Mevcut Görsel</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="@Model.ImageUrl" alt="Hakkımızda Görseli" class="img-fluid" style="max-height: 300px;" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        function translateAbout() {
+            if (confirm('Türkçe alanlardan İngilizce çeviri oluşturulacak. Mevcut İngilizce içerik silinecek. Devam etmek istiyor musunuz?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("TranslateAbout", "Pages")';
+                
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '__RequestVerificationToken';
+                tokenInput.value = token;
+                form.appendChild(tokenInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        async function translateSingleField(sourceFieldName, targetFieldName) {
+            const sourceField = document.querySelector(`[name="${sourceFieldName}"]`);
+            const targetField = document.querySelector(`[name="${targetFieldName}"]`);
+            
+            if (!sourceField || !targetField || !sourceField.value.trim()) {
+                return;
+            }
+
+            try {
+                const response = await fetch('@Url.Action("TranslateText", "Pages")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({
+                        text: sourceField.value,
+                        fromLanguage: 'tr',
+                        toLanguage: 'en'
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    targetField.value = result.translatedText;
+                } else {
+                    console.error('Translation failed:', result.error);
+                }
+            } catch (error) {
+                console.error('Translation error:', error);
+            }
+        }
+
+        // Her alan için çeviri butonları ekle
+        document.addEventListener('DOMContentLoaded', function() {
+            const fields = [
+                { source: 'Title', target: 'TitleEn' },
+                { source: 'Subtitle', target: 'SubtitleEn' },
+                { source: 'Description', target: 'DescriptionEn' }
+            ];
+
+            fields.forEach(field => {
+                const targetField = document.querySelector(`[name="${field.target}"]`);
+                if (targetField) {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn btn-sm btn-outline-primary mt-1';
+                    button.innerHTML = '<i class="fas fa-language"></i>';
+                    button.title = 'Bu alanı çevir';
+                    button.onclick = () => translateSingleField(field.source, field.target);
+                    
+                    targetField.parentNode.appendChild(button);
+                }
+            });
+        });
+    </script>
+}

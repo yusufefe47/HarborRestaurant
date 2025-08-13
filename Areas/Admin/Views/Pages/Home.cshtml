@@ -1,0 +1,313 @@
+@model HarborRestaurant.Entities.Concrete.HomePage
+
+@{
+    ViewData["Title"] = "Anasayfa Yönetimi";
+    Layout = "_AdminLayout";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Anasayfa Yönetimi</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Admin/Dashboard">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item"><a href="/Admin/Pages">Sayfa Yönetimi</a></li>
+                    <li class="breadcrumb-item active">Anasayfa</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-home"></i> Anasayfa İçerik Düzenleme
+                        </h3>
+                    </div>
+                    
+                    <form asp-action="Home" method="post" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <!-- Tab Navigation -->
+                            <ul class="nav nav-tabs" id="languageTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="tr-tab" data-bs-toggle="tab" data-bs-target="#tr-content" type="button" role="tab">
+                                        <i class="fas fa-flag"></i> Türkçe
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="en-tab" data-bs-toggle="tab" data-bs-target="#en-content" type="button" role="tab">
+                                        <i class="fas fa-flag"></i> English
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <!-- Tab Content -->
+                            <div class="tab-content mt-3" id="languageTabsContent">
+                                <!-- Turkish Content -->
+                                <div class="tab-pane fade show active" id="tr-content" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label asp-for="MainTitle" class="control-label">Ana Başlık (TR)</label>
+                                                <input asp-for="MainTitle" class="form-control form-control-lg" placeholder="Örn: Harborlights'a Hoş Geldiniz" />
+                                                <span asp-validation-for="MainTitle" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label asp-for="Subtitle" class="control-label">Alt Başlık (TR)</label>
+                                                <input asp-for="Subtitle" class="form-control" placeholder="Örn: En lezzetli deniz ürünleri" />
+                                                <span asp-validation-for="Subtitle" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label asp-for="Description" class="control-label">Açıklama (TR)</label>
+                                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Anasayfa açıklama metni..."></textarea>
+                                                <span asp-validation-for="Description" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label asp-for="ButtonText" class="control-label">Buton Metni (TR)</label>
+                                                <input asp-for="ButtonText" class="form-control" placeholder="Örn: Rezervasyon Yap" />
+                                                <span asp-validation-for="ButtonText" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- English Content -->
+                                <div class="tab-pane fade" id="en-content" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-language"></i> İngilizce alanları ücretsiz otomatik çeviri ile doldurabilir veya manuel olarak düzenleyebilirsiniz.
+                                                <button type="button" class="btn btn-sm btn-primary ms-2" onclick="translateHomePage()">
+                                                    <i class="fas fa-globe"></i> Otomatik Çevir (Ücretsiz)
+                                                </button>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label asp-for="MainTitleEn" class="control-label">Main Title (EN)</label>
+                                                <input asp-for="MainTitleEn" class="form-control form-control-lg" placeholder="e.g: Welcome to Harborlights" />
+                                                <span asp-validation-for="MainTitleEn" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label asp-for="SubtitleEn" class="control-label">Subtitle (EN)</label>
+                                                <input asp-for="SubtitleEn" class="form-control" placeholder="e.g: The finest seafood experience" />
+                                                <span asp-validation-for="SubtitleEn" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label asp-for="DescriptionEn" class="control-label">Description (EN)</label>
+                                                <textarea asp-for="DescriptionEn" class="form-control" rows="4" placeholder="Homepage description text..."></textarea>
+                                                <span asp-validation-for="DescriptionEn" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label asp-for="ButtonTextEn" class="control-label">Button Text (EN)</label>
+                                                <input asp-for="ButtonTextEn" class="form-control" placeholder="e.g: Make Reservation" />
+                                                <span asp-validation-for="ButtonTextEn" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Common Fields -->
+                            <div class="row mt-4">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label asp-for="ButtonUrl" class="control-label">Buton URL</label>
+                                        <input asp-for="ButtonUrl" class="form-control" placeholder="Örn: /Reservation" />
+                                        <span asp-validation-for="ButtonUrl" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="heroImage" class="control-label">Hero Resmi</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="heroImage" name="heroImage" accept="image/*">
+                                                <label class="custom-file-label" for="heroImage">Resim seçin</label>
+                                            </div>
+                                        </div>
+                                        <small class="form-text text-muted">Önerilen boyut: 1920x1080 px</small>
+                                    </div>
+
+                                    @if (!string.IsNullOrEmpty(Model.HeroImageUrl))
+                                    {
+                                        <div class="form-group">
+                                            <label>Mevcut Resim:</label>
+                                            <div class="text-center">
+                                                <img src="@Model.HeroImageUrl" class="img-fluid img-thumbnail" style="max-height: 200px;" alt="Hero Image" />
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="form-group">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="isActive" asp-for="IsActive">
+                                            <label class="custom-control-label" for="isActive">Aktif</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Kaydet
+                            </button>
+                            <a href="/Admin/Dashboard" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> İptal
+                            </a>
+                            <a href="/" target="_blank" class="btn btn-info float-right">
+                                <i class="fas fa-external-link-alt"></i> Sayfayı Görüntüle
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Card -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-eye"></i> Önizleme
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="hero-preview" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('@(!string.IsNullOrEmpty(Model.HeroImageUrl) ? Model.HeroImageUrl : "/images/bg_1.jpg")') center/cover; color: white; padding: 100px 0; text-align: center; border-radius: 10px;">
+                            <div class="container">
+                                <h1 class="display-4 mb-3" id="preview-title">@Model.MainTitle</h1>
+                                <p class="lead mb-3" id="preview-subtitle">@Model.Subtitle</p>
+                                <p class="mb-4" id="preview-description">@Model.Description</p>
+                                <a href="#" class="btn btn-primary btn-lg" id="preview-button">@Model.ButtonText</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Custom file input
+        $(document).ready(function () {
+            $('.custom-file-input').on('change', function () {
+                var fileName = $(this).val().split('\\').pop();
+                $(this).next('.custom-file-label').addClass("selected").html(fileName);
+            });
+
+            // Live preview
+            $('#MainTitle').on('input', function() {
+                $('#preview-title').text($(this).val());
+            });
+
+            $('#Subtitle').on('input', function() {
+                $('#preview-subtitle').text($(this).val());
+            });
+
+            $('#Description').on('input', function() {
+                $('#preview-description').text($(this).val());
+            });
+
+            $('#ButtonText').on('input', function() {
+                $('#preview-button').text($(this).val());
+            });
+
+            // Translation functions
+            window.translateHomePage = function() {
+                if (confirm('Türkçe alanlardan İngilizce çeviri oluşturulacak. Mevcut İngilizce içerik silinecek. Devam etmek istiyor musunuz?')) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '@Url.Action("TranslateHomePage", "Pages")';
+                    
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                    const tokenInput = document.createElement('input');
+                    tokenInput.type = 'hidden';
+                    tokenInput.name = '__RequestVerificationToken';
+                    tokenInput.value = token;
+                    form.appendChild(tokenInput);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            };
+
+            window.translateSingleField = async function(sourceFieldName, targetFieldName) {
+                const sourceField = document.querySelector(`[name="${sourceFieldName}"]`);
+                const targetField = document.querySelector(`[name="${targetFieldName}"]`);
+                
+                if (!sourceField || !targetField || !sourceField.value.trim()) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch('@Url.Action("TranslateText", "Pages")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: JSON.stringify({
+                            text: sourceField.value,
+                            fromLanguage: 'tr',
+                            toLanguage: 'en'
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        targetField.value = result.translatedText;
+                    } else {
+                        console.error('Translation failed:', result.error);
+                    }
+                } catch (error) {
+                    console.error('Translation error:', error);
+                }
+            };
+
+            // Her alan için çeviri butonları ekle
+            const fields = [
+                { source: 'MainTitle', target: 'MainTitleEn' },
+                { source: 'Subtitle', target: 'SubtitleEn' },
+                { source: 'Description', target: 'DescriptionEn' },
+                { source: 'ButtonText', target: 'ButtonTextEn' }
+            ];
+
+            fields.forEach(field => {
+                const targetField = document.querySelector(`[name="${field.target}"]`);
+                if (targetField) {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn btn-sm btn-outline-primary mt-1';
+                    button.innerHTML = '<i class="fas fa-language"></i>';
+                    button.title = 'Bu alanı çevir';
+                    button.onclick = () => translateSingleField(field.source, field.target);
+                    
+                    targetField.parentNode.appendChild(button);
+                }
+            });
+        });
+    </script>
+}

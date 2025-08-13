@@ -1,0 +1,157 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.MenuItem>
+
+@{
+    ViewData["Title"] = "Menü Öğeleri";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Menü Öğeleri</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/Admin">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Menü Öğeleri</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Menü Öğeleri Listesi</h3>
+                    <div class="card-tools">
+                        <a asp-action="Create" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Yeni Menü Öğesi
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="menuItemsTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Resim</th>
+                                <th>Adı</th>
+                                <th>Kategori</th>
+                                <th>Fiyat</th>
+                                <th>Durumu</th>
+                                <th>Mevcut</th>
+                                <th>Özel</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <img src="@item.ImageUrl" alt="@item.Name" style="width: 50px; height: 50px; object-fit: cover;" class="img-thumbnail">
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                <i class="fas fa-image text-muted"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>@item.Name</td>
+                                    <td>@(item.Category?.Name ?? "Belirtilmemiş")</td>
+                                    <td>@item.Price.ToString("C")</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input toggle-active" id="active@(item.ItemId)" 
+                                                   data-id="@item.ItemId" @(item.IsActive ? "checked" : "")>
+                                            <label class="custom-control-label" for="active@(item.ItemId)"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input toggle-available" id="available@(item.ItemId)" 
+                                                   data-id="@item.ItemId" @(item.IsAvailable ? "checked" : "")>
+                                            <label class="custom-control-label" for="available@(item.ItemId)"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (item.IsSpecial)
+                                        {
+                                            <span class="badge badge-warning">Özel</span>
+                                        }
+                                        @if (item.IsFeatured)
+                                        {
+                                            <span class="badge badge-info">Öne Çıkan</span>
+                                        }
+                                        @if (item.IsSpicy)
+                                        {
+                                            <span class="badge badge-danger">Acılı</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-id="@item.ItemId" class="btn btn-info btn-sm" title="Detaylar">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@item.ItemId" class="btn btn-warning btn-sm" title="Düzenle">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.ItemId" class="btn btn-danger btn-sm" title="Sil">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#menuItemsTable').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+                }
+            });
+
+            // Aktif/Pasif toggle
+            $('.toggle-active').change(function() {
+                var id = $(this).data('id');
+                $.post('/Admin/MenuItems/ToggleActive', { id: id }, function(data) {
+                    if (data.success) {
+                        toastr.success('Durum başarıyla güncellendi.');
+                    } else {
+                        toastr.error('Bir hata oluştu.');
+                    }
+                });
+            });
+
+            // Mevcut/Mevcut Değil toggle
+            $('.toggle-available').change(function() {
+                var id = $(this).data('id');
+                $.post('/Admin/MenuItems/ToggleAvailable', { id: id }, function(data) {
+                    if (data.success) {
+                        toastr.success('Mevcudiyet durumu başarıyla güncellendi.');
+                    } else {
+                        toastr.error('Bir hata oluştu.');
+                    }
+                });
+            });
+        });
+    </script>
+}

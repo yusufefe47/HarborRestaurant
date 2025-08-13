@@ -1,0 +1,234 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.Reservation>
+@{
+    ViewData["Title"] = "Rezervasyon Takvimi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-calendar-alt me-2"></i>Rezervasyon Takvimi
+    </h1>
+    <div>
+        <a asp-action="Index" class="btn btn-outline-primary">
+            <i class="fas fa-list me-1"></i>Liste Görünümü
+        </a>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Yeni Rezervasyon
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Takvim Görünümü</h6>
+            </div>
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reservation Details Modal -->
+<div class="modal fade" id="reservationModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Rezervasyon Detayları</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="reservationDetails">
+                <!-- Details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <a id="editReservationBtn" href="#" class="btn btn-primary">
+                    <i class="fas fa-edit me-1"></i>Düzenle
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+    <style>
+        .fc-event {
+            cursor: pointer;
+            border: none !important;
+            padding: 2px 4px;
+            margin: 1px 0;
+        }
+        
+        .fc-event-pending {
+            background-color: #ffc107 !important;
+            color: #000 !important;
+        }
+        
+        .fc-event-confirmed {
+            background-color: #28a745 !important;
+            color: #fff !important;
+        }
+        
+        .fc-event-completed {
+            background-color: #17a2b8 !important;
+            color: #fff !important;
+        }
+        
+        .fc-event-cancelled {
+            background-color: #dc3545 !important;
+            color: #fff !important;
+        }
+        
+        .fc-daygrid-event {
+            white-space: normal !important;
+            font-size: 0.8em;
+        }
+        
+        .reservation-summary {
+            font-size: 0.9rem;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            
+            var reservations = @Html.Raw(Json.Serialize(Model.Select(r => new {
+                id = r.ReservationId,
+                title = r.FullName + " (" + r.GuestCount + " kişi)",
+                start = r.CheckInDate.ToString("yyyy-MM-dd") + "T" + r.ReservationTime.ToString("HH:mm:ss"),
+                backgroundColor = r.Status switch {
+                    HarborRestaurant.Entities.Enums.ReservationStatus.Pending => "#ffc107",
+                    HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed => "#28a745",
+                    HarborRestaurant.Entities.Enums.ReservationStatus.Completed => "#17a2b8",
+                    HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled => "#dc3545",
+                    _ => "#6c757d"
+                },
+                textColor = r.Status == HarborRestaurant.Entities.Enums.ReservationStatus.Pending ? "#000" : "#fff",
+                extendedProps = new {
+                    reservationId = r.ReservationId,
+                    fullName = r.FullName,
+                    email = r.Email,
+                    phone = r.Phone,
+                    guestCount = r.GuestCount,
+                    status = r.Status.ToString(),
+                    statusText = r.Status switch {
+                        HarborRestaurant.Entities.Enums.ReservationStatus.Pending => "Bekliyor",
+                        HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed => "Onaylandı",
+                        HarborRestaurant.Entities.Enums.ReservationStatus.Completed => "Tamamlandı",
+                        HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled => "İptal Edildi",
+                        _ => "Bilinmiyor"
+                    },
+                    specialRequests = r.SpecialRequests,
+                    tableId = r.TableId,
+                    createdDate = r.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                }
+            })));
+            
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'tr',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                },
+                buttonText: {
+                    today: 'Bugün',
+                    month: 'Ay',
+                    week: 'Hafta',
+                    day: 'Gün',
+                    list: 'Liste'
+                },
+                events: reservations,
+                eventClick: function(info) {
+                    showReservationDetails(info.event.extendedProps);
+                },
+                dateClick: function(info) {
+                    // Redirect to create new reservation with selected date
+                    var createUrl = '@Url.Action("Create", "Reservations", new { area = "Admin" })' + '?date=' + info.dateStr;
+                    window.location.href = createUrl;
+                },
+                eventDidMount: function(info) {
+                    // Add tooltip
+                    info.el.setAttribute('title', 
+                        info.event.extendedProps.fullName + '\n' +
+                        info.event.extendedProps.guestCount + ' kişi\n' +
+                        info.event.extendedProps.statusText
+                    );
+                }
+            });
+            
+            calendar.render();
+            
+            function showReservationDetails(reservation) {
+                var statusBadgeClass = '';
+                switch(reservation.status) {
+                    case 'Pending': statusBadgeClass = 'bg-warning text-dark'; break;
+                    case 'Confirmed': statusBadgeClass = 'bg-success'; break;
+                    case 'Completed': statusBadgeClass = 'bg-info'; break;
+                    case 'Cancelled': statusBadgeClass = 'bg-danger'; break;
+                    default: statusBadgeClass = 'bg-secondary';
+                }
+                
+                var html = `
+                    <div class="reservation-summary">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Ad Soyad:</strong><br>
+                                ${reservation.fullName}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Kişi Sayısı:</strong><br>
+                                <i class="fas fa-users me-1"></i>${reservation.guestCount} kişi
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>E-posta:</strong><br>
+                                <a href="mailto:${reservation.email}">${reservation.email}</a>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Telefon:</strong><br>
+                                <a href="tel:${reservation.phone}">${reservation.phone}</a>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Durum:</strong><br>
+                                <span class="badge ${statusBadgeClass}">${reservation.statusText}</span>
+                            </div>
+                            ${reservation.tableId ? `<div class="col-md-6">
+                                <strong>Masa:</strong><br>
+                                <i class="fas fa-table me-1"></i>Masa ${reservation.tableId}
+                            </div>` : ''}
+                        </div>
+                        
+                        ${reservation.specialRequests ? `<div class="mb-3">
+                            <strong>Özel İstekler:</strong><br>
+                            <div class="border rounded p-2 bg-light">${reservation.specialRequests}</div>
+                        </div>` : ''}
+                        
+                        <div class="text-muted small">
+                            <strong>Oluşturma Tarihi:</strong> ${reservation.createdDate}
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('reservationDetails').innerHTML = html;
+                document.getElementById('editReservationBtn').href = 
+                    '@Url.Action("Details", "Reservations", new { area = "Admin" })'.replace('0', reservation.reservationId);
+                
+                var modal = new bootstrap.Modal(document.getElementById('reservationModal'));
+                modal.show();
+            }
+        });
+    </script>
+}

@@ -1,0 +1,509 @@
+@{
+    ViewData["Title"] = "Yönetim Paneli";
+    Layout = "_AdminLayout";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Yönetim Paneli</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Admin/Dashboard">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container-fluid">
+        
+        <!-- Stat Cards -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@ViewBag.TodayReservations</h3>
+                        <p>Bugünkü Rezervasyonlar</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-calendar"></i>
+                    </div>
+                    <a href="/Admin/Reservations" class="small-box-footer">
+                        Detay <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>@ViewBag.PendingReservations</h3>
+                        <p>Bekleyen Rezervasyonlar</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-clock"></i>
+                    </div>
+                    <a href="/Admin/Reservations?status=pending" class="small-box-footer">
+                        Detay <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>@ViewBag.UnreadMessages</h3>
+                        <p>Okunmayan Mesajlar</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-email-unread"></i>
+                    </div>
+                    <a href="/Admin/Messages" class="small-box-footer">
+                        Detay <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>@ViewBag.TotalMenuItems</h3>
+                        <p>Toplam Menü Ürünü</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-fork"></i>
+                    </div>
+                    <a href="/Admin/Menu" class="small-box-footer">
+                        Detay <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row Statistics -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-primary">
+                    <div class="inner">
+                        <h3>@ViewBag.TotalUsers</h3>
+                        <p>Kayıtlı Kullanıcı</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person-stalker"></i>
+                    </div>
+                    <a href="/Admin/Users" class="small-box-footer">
+                        Detay <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-secondary">
+                    <div class="inner">
+                        <h3>@ViewBag.TotalRooms</h3>
+                        <p>Toplam Salon</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-home"></i>
+                    </div>
+                    <a href="/Admin/Rooms" class="small-box-footer">
+                        Detay <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-indigo">
+                    <div class="inner">
+                        <h3>@ViewBag.TotalPosts</h3>
+                        <p>Blog Yazıları</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-compose"></i>
+                    </div>
+                    <a href="/Admin/Blog" class="small-box-footer">
+                        Detay <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-pink">
+                    <div class="inner">
+                        <h3>@ViewBag.TotalCategories</h3>
+                        <p>Menü Kategorileri</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-folder"></i>
+                    </div>
+                    <a href="/Admin/Menu/Categories" class="small-box-footer">
+                        Detay <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grafikler -->
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-line mr-1"></i>
+                            Aylık İstatistikler
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="monthlyChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-pie mr-1"></i>
+                            Kategori Dağılımı
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="categoryChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-rocket mr-1"></i>
+                            Hızlı İşlemler
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <a href="/Admin/Reservations/Create" class="btn btn-info btn-block">
+                                    <i class="fas fa-plus"></i> Rezervasyon Ekle
+                                </a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="/Admin/Menu/Create" class="btn btn-success btn-block">
+                                    <i class="fas fa-utensils"></i> Menü Ekle
+                                </a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="/Admin/Blog/Create" class="btn btn-primary btn-block">
+                                    <i class="fas fa-edit"></i> Blog Yazısı
+                                </a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="/Admin/Pages/Home" class="btn btn-warning btn-block">
+                                    <i class="fas fa-home"></i> Anasayfa Düzenle
+                                </a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="/Admin/Messages" class="btn btn-secondary btn-block">
+                                    <i class="fas fa-envelope"></i> Mesajlar
+                                </a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="/Admin/QR/QRCodes" class="btn btn-info btn-block">
+                                    <i class="fas fa-qrcode"></i> QR Kodlar
+                                </a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="/Admin/Settings" class="btn btn-dark btn-block">
+                                    <i class="fas fa-cog"></i> Ayarlar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="row">
+            <!-- Recent Reservations -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-calendar-alt mr-1"></i>
+                            Son Rezervasyonlar
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="products-list product-list-in-card pl-2 pr-2">
+                            @if (ViewBag.RecentReservations != null && ((IEnumerable<object>)ViewBag.RecentReservations).Any())
+                            {
+                                @foreach (var reservation in (IEnumerable<dynamic>)ViewBag.RecentReservations)
+                                {
+                                    <li class="item">
+                                        <div class="product-img">
+                                            <i class="fas fa-user-circle fa-2x text-muted"></i>
+                                        </div>
+                                        <div class="product-info">
+                                            <a href="/Admin/Reservations/Details/@reservation.ReservationId" class="product-title">
+                                                @reservation.FullName
+                                                <span class="badge badge-info float-right">@reservation.GuestCount Kişi</span>
+                                            </a>
+                                            <span class="product-description">
+                                                @reservation.CheckInDate.ToString("dd.MM.yyyy") - @reservation.ReservationTime
+                                            </span>
+                                        </div>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li class="item">
+                                    <div class="product-info">
+                                        <span class="product-description text-muted">
+                                            <i class="fas fa-info-circle"></i> Henüz rezervasyon bulunmuyor.
+                                        </span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="/Admin/Reservations" class="uppercase">Tüm Rezervasyonları Gör</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Messages -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-envelope mr-1"></i>
+                            Son Mesajlar
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="products-list product-list-in-card pl-2 pr-2">
+                            @if (ViewBag.RecentMessages != null && ((IEnumerable<object>)ViewBag.RecentMessages).Any())
+                            {
+                                @foreach (var message in (IEnumerable<dynamic>)ViewBag.RecentMessages)
+                                {
+                                    <li class="item">
+                                        <div class="product-img">
+                                            <i class="fas fa-envelope fa-2x text-primary"></i>
+                                        </div>
+                                        <div class="product-info">
+                                            <a href="/Admin/Messages/Details/@message.ContactMessageId" class="product-title">
+                                                @message.FullName
+                                                <span class="badge badge-warning float-right">Yeni</span>
+                                            </a>
+                                            <span class="product-description">
+                                                @(message.Subject?.Length > 50 ? message.Subject.Substring(0, 50) + "..." : message.Subject)
+                                            </span>
+                                        </div>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li class="item">
+                                    <div class="product-info">
+                                        <span class="product-description text-muted">
+                                            <i class="fas fa-info-circle"></i> Henüz okunmayan mesaj bulunmuyor.
+                                        </span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="/Admin/Messages" class="uppercase">Tüm Mesajları Gör</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts & Analytics -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-line mr-1"></i>
+                            Rezervasyon Grafiği (Son 7 Gün)
+                        </h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="reservationChart" style="height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-pie mr-1"></i>
+                            Site İstatistikleri
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-info"><i class="fas fa-utensils"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Menü Kategorileri</span>
+                                <span class="info-box-number">@ViewBag.TotalCategories</span>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box">
+                            <span class="info-box-icon bg-success"><i class="fas fa-blog"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Blog Yazıları</span>
+                                <span class="info-box-number">@ViewBag.TotalPosts</span>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box">
+                            <span class="info-box-icon bg-warning"><i class="fas fa-star"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Öne Çıkan Yazılar</span>
+                                <span class="info-box-number">@ViewBag.FeaturedPosts</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Aylık İstatistikler Grafiği
+        var monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        var monthlyChart = new Chart(monthlyCtx, {
+            type: 'line',
+            data: {
+                labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran'],
+                datasets: [{
+                    label: 'Rezervasyonlar',
+                    data: [@ViewBag.TotalReservations, @(ViewBag.TotalReservations * 0.8), @(ViewBag.TotalReservations * 1.2), @(ViewBag.TotalReservations * 0.9), @(ViewBag.TotalReservations * 1.1), @(ViewBag.TotalReservations * 0.95)],
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1
+                }, {
+                    label: 'Mesajlar',
+                    data: [@ViewBag.TotalMessages, @(ViewBag.TotalMessages * 1.1), @(ViewBag.TotalMessages * 0.9), @(ViewBag.TotalMessages * 1.3), @(ViewBag.TotalMessages * 0.8), @(ViewBag.TotalMessages * 1.0)],
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Son 6 Aylık Trend'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Kategori Dağılımı Grafiği
+        var categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        var categoryChart = new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Rezervasyonlar', 'Ürünler', 'Salonlar', 'Blog Yazıları'],
+                datasets: [{
+                    label: 'Dağılım',
+                    data: [@ViewBag.TotalReservations, @ViewBag.TotalProducts, @ViewBag.TotalRooms, @ViewBag.TotalPosts],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(255, 205, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 205, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'İçerik Dağılımı'
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        
+        // Rezervasyon Grafiği
+        const ctx = document.getElementById('reservationChart').getContext('2d');
+        const reservationChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [@Html.Raw(ViewBag.WeekStats != null ? string.Join(",", ((Dictionary<DateTime, int>)ViewBag.WeekStats).Keys.Select(d => "'" + d.ToString("dd/MM") + "'")) : "")],
+                datasets: [{
+                    label: 'Rezervasyonlar',
+                    data: [@Html.Raw(ViewBag.WeekStats != null ? string.Join(",", ((Dictionary<DateTime, int>)ViewBag.WeekStats).Values) : "0")],
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}

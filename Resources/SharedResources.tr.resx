@@ -1,0 +1,693 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <!-- Footer -->
+  <data name="Footer.QuickLinks" xml:space="preserve">
+    <value>Hızlı Bağlantılar</value>
+  </data>
+  <data name="Footer.Contact" xml:space="preserve">
+    <value>İletişim</value>
+  </data>
+  <data name="Footer.FollowUs" xml:space="preserve">
+    <value>Bizi Takip Edin</value>
+  </data>
+  <data name="Footer.Copyright" xml:space="preserve">
+    <value>Tüm hakları saklıdır.</value>
+  </data>
+  <data name="Footer.Description" xml:space="preserve">
+    <value>Deniz manzarası eşliğinde eşsiz lezzetler sunan restoranımızda, taze deniz ürünlerinden özel et yemeklerine kadar geniş bir menü yelpazesi ile hizmet vermekteyiz.</value>
+  </data>
+  <data name="Footer.QuickMenu" xml:space="preserve">
+    <value>Hızlı Menü</value>
+  </data>
+  <data name="Footer.UserActions" xml:space="preserve">
+    <value>Üye İşlemleri</value>
+  </data>
+  <data name="Footer.AdminPanel" xml:space="preserve">
+    <value>Yönetim Paneli</value>
+  </data>
+  <data name="Footer.ContactInfo" xml:space="preserve">
+    <value>İletişim Bilgileri</value>
+  </data>
+  <data name="Footer.Address" xml:space="preserve">
+    <value>Atatürk Bulvarı No:123, Alsancak/İzmir</value>
+  </data>
+  <data name="Footer.Phone" xml:space="preserve">
+    <value>+90 232 123 45 67</value>
+  </data>
+  <data name="Footer.Email" xml:space="preserve">
+    <value>info@harborlights.com</value>
+  </data>
+  <!-- Navigation -->
+  <data name="Nav.Home" xml:space="preserve">
+    <value>Anasayfa</value>
+  </data>
+  <data name="Nav.About" xml:space="preserve">
+    <value>Hakkımızda</value>
+  </data>
+  <data name="Nav.Menu" xml:space="preserve">
+    <value>Menü</value>
+  </data>
+  <data name="Nav.Rooms" xml:space="preserve">
+    <value>Odalar</value>
+  </data>
+  <data name="Nav.Reservation" xml:space="preserve">
+    <value>Rezervasyon</value>
+  </data>
+  <data name="Nav.Blog" xml:space="preserve">
+    <value>Blog</value>
+  </data>
+  <data name="Nav.Contact" xml:space="preserve">
+    <value>İletişim</value>
+  </data>
+  <data name="Nav.Language" xml:space="preserve">
+    <value>Dil</value>
+  </data>
+  <!-- Common -->
+  <data name="Search" xml:space="preserve">
+    <value>Ara</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detaylar</value>
+  </data>
+  <data name="BookNow" xml:space="preserve">
+    <value>Rezervasyon Yap</value>
+  </data>
+  <data name="MakeReservation" xml:space="preserve">
+    <value>Rezervasyon Yap</value>
+  </data>
+  <data name="ReadMore" xml:space="preserve">
+    <value>Devamını Oku</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Gönder</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Temizle</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <!-- Rooms -->
+  <data name="Rooms.Title" xml:space="preserve">
+    <value>Odalarımız</value>
+  </data>
+  <data name="Rooms.Subtitle" xml:space="preserve">
+    <value>Konforlu ve şık odalarımızı keşfedin</value>
+  </data>
+  <data name="Rooms.CheckIn" xml:space="preserve">
+    <value>Giriş Tarihi</value>
+  </data>
+  <data name="Rooms.CheckOut" xml:space="preserve">
+    <value>Çıkış Tarihi</value>
+  </data>
+  <data name="Rooms.Guests" xml:space="preserve">
+    <value>Misafir Sayısı</value>
+  </data>
+  <data name="Rooms.SearchRooms" xml:space="preserve">
+    <value>Oda Ara</value>
+  </data>
+  <data name="Rooms.Available" xml:space="preserve">
+    <value>Müsait</value>
+  </data>
+  <data name="Rooms.NotAvailable" xml:space="preserve">
+    <value>Dolu</value>
+  </data>
+  <data name="Rooms.PricePerNight" xml:space="preserve">
+    <value>Gecelik</value>
+  </data>
+  <data name="Rooms.SortBy" xml:space="preserve">
+    <value>Sırala</value>
+  </data>
+  <data name="Rooms.SortByPrice" xml:space="preserve">
+    <value>Fiyata göre</value>
+  </data>
+  <data name="Rooms.SortByCapacity" xml:space="preserve">
+    <value>Kapasiteye göre</value>
+  </data>
+  <data name="Rooms.FilterByPrice" xml:space="preserve">
+    <value>Fiyat Aralığı</value>
+  </data>
+  <data name="Rooms.NoRoomsFound" xml:space="preserve">
+    <value>Aradığınız kriterlere uygun oda bulunamadı.</value>
+  </data>
+  <!-- Reservation -->
+  <data name="Reservation.Title" xml:space="preserve">
+    <value>Rezervasyon</value>
+  </data>
+  <data name="Reservation.Form" xml:space="preserve">
+    <value>Rezervasyon Formu</value>
+  </data>
+  <data name="Reservation.CustomerInfo" xml:space="preserve">
+    <value>Müşteri Bilgileri</value>
+  </data>
+  <data name="Reservation.FirstName" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="Reservation.LastName" xml:space="preserve">
+    <value>Soyad</value>
+  </data>
+  <data name="Reservation.FullName" xml:space="preserve">
+    <value>Ad Soyad</value>
+  </data>
+  <data name="Reservation.Email" xml:space="preserve">
+    <value>E-posta</value>
+  </data>
+  <data name="Reservation.Phone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="Reservation.GuestCount" xml:space="preserve">
+    <value>Misafir Sayısı</value>
+  </data>
+  <data name="Reservation.CheckIn" xml:space="preserve">
+    <value>Giriş Tarihi</value>
+  </data>
+  <data name="Reservation.CheckOut" xml:space="preserve">
+    <value>Çıkış Tarihi</value>
+  </data>
+  <data name="Reservation.Time" xml:space="preserve">
+    <value>Saat</value>
+  </data>
+  <data name="Reservation.Room" xml:space="preserve">
+    <value>Oda</value>
+  </data>
+  <data name="Reservation.SpecialRequests" xml:space="preserve">
+    <value>Özel İstekler</value>
+  </data>
+  <data name="Reservation.SpecialRequestsPlaceholder" xml:space="preserve">
+    <value>Özel isteğiniz varsa buraya yazabilirsiniz...</value>
+  </data>
+  <data name="Reservation.MakeReservation" xml:space="preserve">
+    <value>Rezervasyon Yap</value>
+  </data>
+  <data name="Reservation.SelectedRoom" xml:space="preserve">
+    <value>Seçilen Oda</value>
+  </data>
+  <data name="Reservation.Success" xml:space="preserve">
+    <value>Rezervasyonunuz başarıyla oluşturuldu!</value>
+  </data>
+  <data name="Reservation.Error" xml:space="preserve">
+    <value>Rezervasyon sırasında bir hata oluştu.</value>
+  </data>
+  <!-- Menu -->
+  <data name="Menu.Title" xml:space="preserve">
+    <value>Menümüz</value>
+  </data>
+  <data name="Menu.Subtitle" xml:space="preserve">
+    <value>Lezzetli yemeklerimizi keşfedin</value>
+  </data>
+  <data name="Menu.AllCategories" xml:space="preserve">
+    <value>Tüm Kategoriler</value>
+  </data>
+  <data name="Menu.Price" xml:space="preserve">
+    <value>Fiyat</value>
+  </data>
+  <!-- Blog -->
+  <data name="Blog.Title" xml:space="preserve">
+    <value>Blog</value>
+  </data>
+  <data name="Blog.Subtitle" xml:space="preserve">
+    <value>En son haberler ve duyurular</value>
+  </data>
+  <data name="Blog.RecentPosts" xml:space="preserve">
+    <value>Son Yazılar</value>
+  </data>
+  <data name="Blog.Date" xml:space="preserve">
+    <value>Tarih</value>
+  </data>
+  <data name="Blog.Category" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <!-- Contact -->
+  <data name="Contact.Title" xml:space="preserve">
+    <value>İletişim</value>
+  </data>
+  <data name="Contact.GetInTouch" xml:space="preserve">
+    <value>Bizimle İletişime Geçin</value>
+  </data>
+  <data name="Contact.Info" xml:space="preserve">
+    <value>İletişim Bilgileri</value>
+  </data>
+  <data name="Contact.Name" xml:space="preserve">
+    <value>Ad Soyad</value>
+  </data>
+  <data name="Contact.Email" xml:space="preserve">
+    <value>E-posta</value>
+  </data>
+  <data name="Contact.Subject" xml:space="preserve">
+    <value>Konu</value>
+  </data>
+  <data name="Contact.Message" xml:space="preserve">
+    <value>Mesaj</value>
+  </data>
+  <data name="Contact.SendMessage" xml:space="preserve">
+    <value>Mesaj Gönder</value>
+  </data>
+  <data name="Contact.Address" xml:space="preserve">
+    <value>Adres</value>
+  </data>
+  <data name="Contact.Phone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="Contact.OpeningHours" xml:space="preserve">
+    <value>Çalışma Saatleri</value>
+  </data>
+  <data name="Contact.Success" xml:space="preserve">
+    <value>Mesajınız başarıyla gönderildi!</value>
+  </data>
+  <data name="Contact.Error" xml:space="preserve">
+    <value>Mesaj gönderilirken bir hata oluştu.</value>
+  </data>
+  <!-- Footer -->
+  <!-- Home Page -->
+  <data name="CustomerReviews" xml:space="preserve">
+    <value>Müşteri Yorumları</value>
+  </data>
+  <data name="HappyCustomers" xml:space="preserve">
+    <value>Mutlu Müşteriler</value>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>Müşteri</value>
+  </data>
+  <data name="CustomerReview1" xml:space="preserve">
+    <value>Harborlights, İzmir'de gittiğim en iyi mekanlardan biri. Deniz manzarası, harika yemekler ve samimi hizmet. Kesinlikle tavsiye ederim!</value>
+  </data>
+  <data name="CustomerReview2" xml:space="preserve">
+    <value>Özel günümü kutlamak için mükemmel bir yerdi. Personel çok ilgiliydi ve yemekler harikaydı. Tekrar geleceğiz!</value>
+  </data>
+  <data name="CustomerReview3" xml:space="preserve">
+    <value>Deniz ürünleri konusunda gerçekten uzmanlar. Levrek ızgarası mükemmeldi! Atmosfer de çok romantikti.</value>
+  </data>
+  <data name="CustomerReview4" xml:space="preserve">
+    <value>Ailecek gittiğimiz harika bir mekan. Çocuklarımız da çok memnun kaldı. Geniş menü seçenekleri var.</value>
+  </data>
+  <data name="CompanyExperience" xml:space="preserve">
+    <value>25 yıllık deneyimimizle, ailenizin ve sevdiklerinizin en özel anlarına ev sahipliği yapıyoruz.</value>
+  </data>
+  <data name="ChefExperience" xml:space="preserve">
+    <value>Deneyimli şef kadromuz, günlük taze malzemelerle hazırladığı özel tarifler ile damak tadınıza hitap ederken, profesyonel servis ekibimiz de konforlu ve samimi bir atmosfer yaratmaktadır.</value>
+  </data>
+  <data name="About.Harborlights" xml:space="preserve">
+    <value>Harborlights Hakkında</value>
+  </data>
+  <data name="About.MainTitle" xml:space="preserve">
+    <value>İzmir'in En Prestijli Deniz Kenarı Restoranı</value>
+  </data>
+  <data name="About.Description" xml:space="preserve">
+    <value>1998 yılından bu yana İzmir'in en prestijli sahil şeridinde hizmet veren Harborlights, deniz manzarası eşliğinde eşsiz lezzetler sunmaktadır. Taze deniz ürünleri ve özenle hazırlanan yemeklerimizle unutulmaz anlar yaşatıyoruz.</value>
+  </data>
+  <data name="BookYourTable" xml:space="preserve">
+    <value>Masanızı Ayırtın</value>
+  </data>
+  <data name="ViewMenu" xml:space="preserve">
+    <value>Menüyü İncele</value>
+  </data>
+  <data name="Home.Menu.Restaurant" xml:space="preserve">
+    <value>Restoran</value>
+  </data>
+  <data name="Home.Menu.RestaurantMenu" xml:space="preserve">
+    <value>Özel Menümüz</value>
+  </data>
+  <data name="Home.Menu.NoItems" xml:space="preserve">
+    <value>Henüz özel menü öğesi bulunmamaktadır.</value>
+  </data>
+  <data name="Home.Blog.RecentPosts" xml:space="preserve">
+    <value>Son Yazılar</value>
+  </data>
+  <data name="Home.BookingForm.CheckIn" xml:space="preserve">
+    <value>Giriş Tarihi</value>
+  </data>
+  <data name="Home.BookingForm.CheckOut" xml:space="preserve">
+    <value>Çıkış Tarihi</value>
+  </data>
+  <data name="Home.BookingForm.Time" xml:space="preserve">
+    <value>Saat</value>
+  </data>
+  <data name="Home.BookingForm.Guests" xml:space="preserve">
+    <value>Misafir Sayısı</value>
+  </data>
+  <data name="Home.BookingForm.Search" xml:space="preserve">
+    <value>Ara</value>
+  </data>
+  <data name="Home.Welcome" xml:space="preserve">
+    <value>Hoş Geldiniz</value>
+  </data>
+  <data name="Home.Hero.Title" xml:space="preserve">
+    <value>Harborlights Restoran'a Hoş Geldiniz</value>
+  </data>
+  <data name="Home.Hero.Subtitle" xml:space="preserve">
+    <value>Lezzet ve konforun buluştuğu nokta</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Seçiniz</value>
+  </data>
+  <data name="Common.Person" xml:space="preserve">
+    <value>Kişi</value>
+  </data>
+  <data name="Home.BookingForm.FindRooms" xml:space="preserve">
+    <value>Oda Bul</value>
+  </data>
+  <data name="Home.Hero.Service" xml:space="preserve">
+    <value>Evinizin sıcaklığında hizmet</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Hoş Geldiniz</value>
+  </data>
+  <data name="ExploreMenu" xml:space="preserve">
+    <value>Menüyü İncele</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>Tümünü Gör</value>
+  </data>
+  <data name="OurSpecialFlavors" xml:space="preserve">
+    <value>Özel Lezzetlerimiz</value>
+  </data>
+  <data name="OurBlog" xml:space="preserve">
+    <value>Blogumuz</value>
+  </data>
+  <data name="OurRooms" xml:space="preserve">
+    <value>Odalarımız</value>
+  </data>
+  <data name="Home.Services.Atmosphere" xml:space="preserve">
+    <value>Samimi Atmosfer</value>
+  </data>
+  <data name="Home.Services.Service" xml:space="preserve">
+    <value>Kaliteli Hizmet</value>
+  </data>
+  <data name="Home.Rooms.MinOrder" xml:space="preserve">
+    <value>minimum sipariş</value>
+  </data>
+  <data name="Home.Rooms.BookThisRoom" xml:space="preserve">
+    <value>Bu Odayı Rezerve Et</value>
+  </data>
+  <data name="Home.Rooms.NoRooms" xml:space="preserve">
+    <value>Şu anda müsait oda bulunmamaktadır.</value>
+  </data>
+  <!-- About Page -->
+  <data name="About.Title" xml:space="preserve">
+    <value>Hakkımızda</value>
+  </data>
+  <data name="About.Breadcrumb" xml:space="preserve">
+    <value>Hakkımızda</value>
+  </data>
+  <data name="About.HarborlightsAbout" xml:space="preserve">
+    <value>Harborlights Hakkında</value>
+  </data>
+  <data name="About.Welcome" xml:space="preserve">
+    <value>Hoş Geldiniz</value>
+  </data>
+  <data name="About.DontWantToLeave" xml:space="preserve">
+    <value>Ayrılmak İstemeyeceğiniz Yer</value>
+  </data>
+  <data name="About.FriendlyService" xml:space="preserve">
+    <value>Samimi Hizmet</value>
+  </data>
+  <data name="About.BreakfastService" xml:space="preserve">
+    <value>Kahvaltı Servisi</value>
+  </data>
+  <data name="About.TransferServices" xml:space="preserve">
+    <value>Transfer Hizmetleri</value>
+  </data>
+  <data name="About.SuiteSpa" xml:space="preserve">
+    <value>Suit &amp; Spa</value>
+  </data>
+  <data name="About.ComfortableRooms" xml:space="preserve">
+    <value>Konforlu Odalar</value>
+  </data>
+  <data name="About.RecommendedRestaurant" xml:space="preserve">
+    <value>Tavsiye Edilen Restoran</value>
+  </data>
+  <data name="About.ReserveNow" xml:space="preserve">
+    <value>Şimdi Rezerve Et</value>
+  </data>
+  <data name="About.CustomerReviews" xml:space="preserve">
+    <value>Müşteri Yorumları</value>
+  </data>
+  <data name="About.HappyCustomers" xml:space="preserve">
+    <value>Mutlu Müşteriler</value>
+  </data>
+  <data name="About.Photos" xml:space="preserve">
+    <value>Fotoğraflar</value>
+  </data>
+  <data name="About.DefaultDescription" xml:space="preserve">
+    <value>Uzak uzak dağların arkasında, Vokalia ve Consonantia ülkelerinden uzakta, kör metinler yaşar. Ayrı ayrı yaşarlar Semantik'in kıyılarında, büyük bir dil okyanusunda Bookmarksgrove'da.</value>
+  </data>
+  <data name="About.TestimonialText" xml:space="preserve">
+    <value>Duden adında küçük bir nehir, yerlerinden akıyor ve gerekli kurallarla onları besliyor. Bu cennet gibi bir ülke, cümlelerin kızarmış parçalarının ağzına uçtuğu bir yer.</value>
+  </data>
+  <data name="About.TestimonialName1" xml:space="preserve">
+    <value>Ahmet Yılmaz</value>
+  </data>
+  <data name="About.TestimonialName2" xml:space="preserve">
+    <value>Fatma Demir</value>
+  </data>
+  <data name="About.TestimonialName3" xml:space="preserve">
+    <value>Mehmet Kaya</value>
+  </data>
+  <data name="About.TestimonialName4" xml:space="preserve">
+    <value>Zeynep Özkan</value>
+  </data>
+  <data name="About.TestimonialTitle1" xml:space="preserve">
+    <value>İş İnsanı</value>
+  </data>
+  <data name="About.TestimonialTitle2" xml:space="preserve">
+    <value>Mimar</value>
+  </data>
+  <data name="About.TestimonialTitle3" xml:space="preserve">
+    <value>Doktor</value>
+  </data>
+  <data name="About.TestimonialTitle4" xml:space="preserve">
+    <value>Avukat</value>
+  </data>
+  <!-- Contact Page -->
+  <data name="Contact.Breadcrumb" xml:space="preserve">
+    <value>İletişim</value>
+  </data>
+  <data name="Contact.FullName" xml:space="preserve">
+    <value>Ad Soyad</value>
+  </data>
+  <data name="Contact.EmailAddress" xml:space="preserve">
+    <value>E-posta Adresi</value>
+  </data>
+  <data name="Contact.WorkingHours" xml:space="preserve">
+    <value>Çalışma Saatleri</value>
+  </data>
+  <data name="Contact.DefaultAddress" xml:space="preserve">
+    <value>Alsancak Bulvarı No:123, Alsancak/İzmir</value>
+  </data>
+  <data name="Contact.DefaultWorkingHours" xml:space="preserve">
+    <value>Pazartesi - Perşembe: 11:00 - 24:00 | Cuma - Pazar: 11:00 - 02:00</value>
+  </data>
+  <data name="Blog.Description" xml:space="preserve">
+    <value>Harborlights'tan son haberler, lezzetli tarifler ve restoran hikayelerimiz</value>
+  </data>
+  <data name="Blog.Previous" xml:space="preserve">
+    <value>Önceki</value>
+  </data>
+  <data name="Blog.NewsletterComingSoon" xml:space="preserve">
+    <value>Bülten aboneliği özelliği yakında aktif olacak!</value>
+  </data>
+  <data name="Contact.DefaultPhone" xml:space="preserve">
+    <value>+90 232 123 45 67</value>
+  </data>
+  <data name="Contact.DefaultEmail" xml:space="preserve">
+    <value>info@harborlights.com</value>
+  </data>
+  <!-- Reservation Page -->
+  <!-- Rooms Page -->
+  <data name="Rooms.ViewDetails" xml:space="preserve">
+    <value>Detayları Gör</value>
+  </data>
+  <data name="Rooms.Stars" xml:space="preserve">
+    <value>Yıldız</value>
+  </data>
+  <data name="Rooms.Sort" xml:space="preserve">
+    <value>Sırala</value>
+  </data>
+  <data name="Rooms.MinPrice" xml:space="preserve">
+    <value>En Düşük Fiyat</value>
+  </data>
+  <data name="Rooms.MaxPrice" xml:space="preserve">
+    <value>En Yüksek Fiyat</value>
+  </data>
+  <data name="Rooms.Query" xml:space="preserve">
+    <value>Arama</value>
+  </data>
+  <data name="Rooms.Time" xml:space="preserve">
+    <value>Saat</value>
+  </data>
+  <data name="Rooms.Find" xml:space="preserve">
+    <value>Bul</value>
+  </data>
+  <!-- Menu Page -->
+  <data name="Menu.Breadcrumb" xml:space="preserve">
+    <value>Menü</value>
+  </data>
+  <data name="Menu.TasteMenu" xml:space="preserve">
+    <value>Lezzet Menümüz</value>
+  </data>
+  <data name="Menu.Description" xml:space="preserve">
+    <value>Taze deniz ürünlerinden Türk mutfağının en özel lezzetlerine kadar geniş menümüzü keşfedin.</value>
+  </data>
+  <data name="Menu.NoPhoto" xml:space="preserve">
+    <value>Fotoğraf yok</value>
+  </data>
+  <data name="Menu.Special" xml:space="preserve">
+    <value>Özel</value>
+  </data>
+  <data name="Menu.NoProducts" xml:space="preserve">
+    <value>Bu kategoride ürün bulunmamaktadır</value>
+  </data>
+  <data name="Menu.Loading" xml:space="preserve">
+    <value>Yükleniyor...</value>
+  </data>
+  <data name="Menu.CelebrationTitle" xml:space="preserve">
+    <value>Özel Günlerinizi Bizimle Kutlayın</value>
+  </data>
+  <data name="Menu.CelebrationDescription" xml:space="preserve">
+    <value>Doğum günü, yıl dönümü veya özel günleriniz için rezervasyon yapın.</value>
+  </data>
+  <data name="Menu.MakeReservation" xml:space="preserve">
+    <value>Rezervasyon Yap</value>
+  </data>
+  <!-- Blog Page -->
+  <data name="Blog.Views" xml:space="preserve">
+    <value>görüntülenme</value>
+  </data>
+  <data name="Blog.Featured" xml:space="preserve">
+    <value>Öne Çıkan</value>
+  </data>
+  <data name="Blog.ReadMore" xml:space="preserve">
+    <value>Devamını Oku</value>
+  </data>
+  <data name="Blog.NoPosts" xml:space="preserve">
+    <value>Henüz Blog Yazısı Yok</value>
+  </data>
+  <data name="Blog.ComingSoon" xml:space="preserve">
+    <value>Çok yakında yeni yazılarımızla burada olacağız!</value>
+  </data>
+  <data name="Blog.Next" xml:space="preserve">
+    <value>Sonraki</value>
+  </data>
+  <data name="Blog.Search" xml:space="preserve">
+    <value>Arama</value>
+  </data>
+  <data name="Blog.SearchPlaceholder" xml:space="preserve">
+    <value>Blog yazılarında ara...</value>
+  </data>
+  <data name="Blog.Categories" xml:space="preserve">
+    <value>Kategoriler</value>
+  </data>
+  <data name="Blog.NoPostsYet" xml:space="preserve">
+    <value>Henüz yazı yok</value>
+  </data>
+  <data name="Blog.Newsletter" xml:space="preserve">
+    <value>Bülten</value>
+  </data>
+  <data name="Blog.NewsletterDescription" xml:space="preserve">
+    <value>Yeni blog yazılarımızdan haberdar olmak için bültenimize abone olun.</value>
+  </data>
+  <data name="Blog.EmailPlaceholder" xml:space="preserve">
+    <value>E-posta adresiniz</value>
+  </data>
+  <data name="Blog.Subscribe" xml:space="preserve">
+    <value>Abone Ol</value>
+  </data>
+  <!-- About Page Additional -->
+  <data name="Brand" xml:space="preserve">
+    <value>Harborlights</value>
+  </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Tümü</value>
+  </data>
+  <data name="Common.Room" xml:space="preserve">
+    <value>oda</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>toplam</value>
+  </data>
+  <data name="Footer.Rights" xml:space="preserve">
+    <value>Tüm hakları saklıdır.</value>
+  </data>
+  <data name="Home.Blog.Subtitle" xml:space="preserve">
+    <value>Blogumuza Göz Atın</value>
+  </data>
+  <data name="Home.Blog.Title" xml:space="preserve">
+    <value>Son Haberler</value>
+  </data>
+  <data name="Home.Blog.ViewAll" xml:space="preserve">
+    <value>Tüm Yazıları Görüntüle</value>
+  </data>
+  <data name="Home.BookNow" xml:space="preserve">
+    <value>Şimdi Rezerve Et</value>
+  </data>
+  <data name="Home.HeroDescription" xml:space="preserve">
+    <value>İzmir'in en güzel sahil şeridinde taze deniz ürünleri ve eşsiz manzara ile unutulmaz anlar yaşayın.</value>
+  </data>
+  <data name="Home.HeroSubtitle" xml:space="preserve">
+    <value>Sadece bir restoran değil... bir deneyim</value>
+  </data>
+  <data name="Home.HeroTitle" xml:space="preserve">
+    <value>Deniz kenarında unutulmaz lezzetler</value>
+  </data>
+  <data name="Home.Menu.Subtitle" xml:space="preserve">
+    <value>Lezzet</value>
+  </data>
+  <data name="Home.Menu.Title" xml:space="preserve">
+    <value>Özel Menümüz</value>
+  </data>
+  <data name="Home.Menu.ViewAll" xml:space="preserve">
+    <value>Tüm Menüyü Gör</value>
+  </data>
+  <data name="Home.ReadMore" xml:space="preserve">
+    <value>Devamını Oku</value>
+  </data>
+  <data name="Home.Rooms.Subtitle" xml:space="preserve">
+    <value>Özel Etkinlik Salonları</value>
+  </data>
+  <data name="Home.Rooms.Title" xml:space="preserve">
+    <value>Harborlights Salonları</value>
+  </data>
+  <data name="Home.Rooms.ViewAll" xml:space="preserve">
+    <value>
+    </value>
+  </data>
+  <data name="Home.Services.Food" xml:space="preserve">
+    <value>Lezzetli Yemekler</value>
+  </data>
+  <data name="Home.ViewAllRooms" xml:space="preserve">
+    <value>Tüm Salonları Gör</value>
+  </data>
+  <data name="Lang.EN" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Lang.TR" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="Message.ReservationError" xml:space="preserve">
+    <value>Rezervasyon oluşturulurken bir hata oluştu. Lütfen tekrar deneyiniz.</value>
+  </data>
+  <data name="Message.ReservationSuccess" xml:space="preserve">
+    <value>Rezervasyon talebiniz başarıyla gönderildi. En kısa sürede size dönüş yapacağız.</value>
+  </data>
+  <data name="Nav.Login" xml:space="preserve">
+    <value>Giriş</value>
+  </data>
+  <data name="Nav.Logout" xml:space="preserve">
+    <value>Çıkış</value>
+  </data>
+</root>

@@ -1,0 +1,103 @@
+@{
+    ViewData["Title"] = "Mesaj Yanıtla";
+    var originalMessage = ViewBag.OriginalMessage as HarborRestaurant.Entities.Concrete.ContactMessage;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-reply"></i> Mesaj Yanıtla</h2>
+    <div>
+        <a href="@Url.Action("Details", new { id = originalMessage?.ContactMessageId })" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Geri
+        </a>
+    </div>
+</div>
+
+@if (originalMessage != null)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Orijinal Mesaj -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="fas fa-envelope"></i> Orijinal Mesaj
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Gönderen:</strong> @originalMessage.FullName<br>
+                            <strong>E-posta:</strong> @originalMessage.Email<br>
+                            <strong>Konu:</strong> @originalMessage.Subject
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <strong>Tarih:</strong> @originalMessage.SentDate.ToString("dd.MM.yyyy HH:mm")
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="bg-light p-3 rounded">
+                        @Html.Raw(originalMessage.Message.Replace("\n", "<br>"))
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yanıt Formu -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-edit"></i> Yanıt Yaz
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" asp-action="Reply" asp-route-id="@originalMessage.ContactMessageId">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="replyTo" class="form-label"><strong>Alıcı:</strong></label>
+                                    <input type="text" id="replyTo" class="form-control" value="@originalMessage.Email" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="replySubject" class="form-label"><strong>Konu:</strong></label>
+                                    <input type="text" id="replySubject" name="replySubject" class="form-control" 
+                                           value="RE: @originalMessage.Subject" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="replyMessage" class="form-label"><strong>Mesaj:</strong></label>
+                            <textarea id="replyMessage" name="replyMessage" class="form-control" rows="10" 
+                                      placeholder="Yanıtınızı buraya yazın..." required></textarea>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Yanıt Gönder
+                            </button>
+                            <a href="@Url.Action("Details", new { id = originalMessage.ContactMessageId })" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> İptal
+                            </a>
+                        </div>
+                        
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Not:</strong> Bu yanıt sisteme kaydedilecek ve mesaj "Yanıtlandı" olarak işaretlenecektir. 
+                            E-posta gönderme özelliği henüz aktif değil.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i>
+        Orijinal mesaj bulunamadı.
+    </div>
+}

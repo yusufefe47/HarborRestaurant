@@ -1,0 +1,297 @@
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResource> Localizer
+@model IEnumerable<HarborRestaurant.Entities.Concrete.BlogPost>
+@{
+    ViewData["Title"] = Localizer["Blog.Title"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Hero Section -->
+<section class="hero-section" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/images/blog-hero.jpg'); background-size: cover; background-position: center;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center text-white">
+                <h1 class="display-4 mb-4">@Localizer["Blog.Title"]</h1>
+                <p class="lead">@Localizer["Blog.Description"]</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Section -->
+<section class="blog-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Blog Posts -->
+            <div class="col-lg-8">
+                <div class="row">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var post in Model)
+                        {
+                            <div class="col-md-6 mb-4">
+                                <div class="card blog-card h-100">
+                                    @if (!string.IsNullOrEmpty(post.ImageUrl))
+                                    {
+                                        <img src="@post.ImageUrl" class="card-img-top" alt="@post.Title" style="height: 200px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                                            <i class="fas fa-image fa-3x text-muted"></i>
+                                        </div>
+                                    }
+                                    
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="blog-meta mb-2">
+                                            <small class="text-muted">
+                                                <i class="far fa-calendar-alt"></i> @post.PublishedDate?.ToString("dd MMM yyyy")
+                                                <span class="mx-2">|</span>
+                                                <i class="far fa-user"></i> @post.Author
+                                                <span class="mx-2">|</span>
+                                                <i class="far fa-eye"></i> @post.ViewCount @Localizer["Blog.Views"]
+                                            </small>
+                                            @if (post.IsFeatured)
+                                            {
+                                                <span class="badge badge-primary ms-2">@Localizer["Blog.Featured"]</span>
+                                            }
+                                        </div>
+                                        
+                                        <h5 class="card-title">
+                                            <a href="@Url.Action("Detail", "Blog", new { id = post.PostId })" class="text-decoration-none text-dark">
+                                                @post.Title
+                                            </a>
+                                        </h5>
+                                        
+                                        <p class="card-text text-muted flex-grow-1">
+                                            @if (!string.IsNullOrEmpty(post.Summary))
+                                            {
+                                                @(post.Summary.Length > 100 ? post.Summary.Substring(0, 100) + "..." : post.Summary)
+                                            }
+                                            else
+                                            {
+                                                @(post.Content != null && post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content)
+                                            }
+                                        </p>
+                                        
+                                        <div class="mt-auto">
+                                            <a href="@Url.Action("Detail", "Blog", new { id = post.PostId })" class="btn btn-outline-primary btn-sm">
+                                                @Localizer["Blog.ReadMore"] <i class="fas fa-arrow-right ms-1"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <div class="text-center py-5">
+                                <i class="fas fa-blog fa-4x text-muted mb-3"></i>
+                                <h4 class="text-muted">@Localizer["Blog.NoPosts"]</h4>
+                                <p class="text-muted">@Localizer["Blog.ComingSoon"]</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                @if (Model != null && Model.Count() > 6)
+                {
+                    <nav aria-label="Blog pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">@Localizer["Blog.Previous"]</a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" href="#">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">2</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">3</a>
+                            </li>
+                            <li class="page-item">
+                                                                    <a class="page-link" href="#">@Localizer["Blog.Next"]</a>
+                            </li>
+                        </ul>
+                    </nav>
+                }
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="blog-sidebar">
+                    <!-- Search -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-search"></i> @Localizer["Blog.Search"]</h5>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="@Localizer["Blog.SearchPlaceholder"]">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    @if (ViewBag.Categories != null)
+                    {
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-folder"></i> @Localizer["Blog.Categories"]</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group list-group-flush">
+                                    @foreach (var category in ViewBag.Categories)
+                                    {
+                                        <a href="@Url.Action("Category", "Blog", new { id = category.CategoryId })" 
+                                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            @category.Name
+                                            <span class="badge badge-primary badge-pill">0</span>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Recent Posts -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-clock"></i> @Localizer["Blog.RecentPosts"]</h5>
+                        </div>
+                        <div class="card-body">
+                            @if (Model != null && Model.Any())
+                            {
+                                @foreach (var post in Model.Take(3))
+                                {
+                                    <div class="d-flex mb-3">
+                                        @if (!string.IsNullOrEmpty(post.ImageUrl))
+                                        {
+                                            <img src="@post.ImageUrl" class="me-3 rounded" width="60" height="60" style="object-fit: cover;" alt="@post.Title">
+                                        }
+                                        else
+                                        {
+                                            <div class="me-3 bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                <i class="fas fa-image text-muted"></i>
+                                            </div>
+                                        }
+                                        
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">
+                                                <a href="@Url.Action("Detail", "Blog", new { id = post.PostId })" class="text-decoration-none">
+                                                    @(post.Title.Length > 50 ? post.Title.Substring(0, 50) + "..." : post.Title)
+                                                </a>
+                                            </h6>
+                                            <small class="text-muted">
+                                                <i class="far fa-calendar-alt"></i> @post.PublishedDate?.ToString("dd MMM yyyy")
+                                            </small>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-muted mb-0">@Localizer["Blog.NoPostsYet"]</p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Newsletter -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-envelope"></i> @Localizer["Blog.Newsletter"]</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">@Localizer["Blog.NewsletterDescription"]</p>
+                            <form>
+                                <div class="mb-3">
+                                    <input type="email" class="form-control" placeholder="@Localizer["Blog.EmailPlaceholder"]">
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-paper-plane"></i> @Localizer["Blog.Subscribe"]
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        .hero-section {
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+        }
+
+        .blog-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .blog-meta {
+            font-size: 0.875rem;
+        }
+
+        .blog-sidebar .card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .blog-sidebar .card-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .list-group-item-action:hover {
+            background-color: #f8f9fa;
+        }
+
+        .badge-pill {
+            border-radius: 50px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Search form submission
+            $('.blog-sidebar form').on('submit', function(e) {
+                e.preventDefault();
+                var searchTerm = $(this).find('input[type="text"], input[type="email"]').val();
+                if (searchTerm) {
+                    // Implement search functionality
+                    console.log('Searching for:', searchTerm);
+                }
+            });
+
+            // Newsletter subscription
+            $('.card:has(.fa-envelope) form').on('submit', function(e) {
+                e.preventDefault();
+                var email = $(this).find('input[type="email"]').val();
+                if (email) {
+                    alert('@Localizer["Blog.NewsletterComingSoon"]');
+                }
+            });
+        });
+    </script>
+}

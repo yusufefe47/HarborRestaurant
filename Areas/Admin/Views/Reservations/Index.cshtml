@@ -1,0 +1,159 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.Reservation>
+
+@{
+    ViewData["Title"] = "Rezervasyonlar";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-calendar-alt"></i> Rezervasyonlar</h2>
+    <div>
+        <a href="@Url.Action("Create")" class="btn btn-success">
+            <i class="fas fa-plus"></i> Yeni Rezervasyon
+        </a>
+    </div>
+</div>
+
+<!-- Filtreler -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Durum</label>
+                <select name="status" class="form-select">
+                    <option value="">Tümü</option>
+                    <option value="Pending">Beklemede</option>
+                    <option value="Confirmed">Onaylandı</option>
+                    <option value="Cancelled">İptal Edildi</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Tarih</label>
+                <input type="date" name="date" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Müşteri Adı</label>
+                <input type="text" name="customerName" class="form-control" placeholder="Müşteri adı ara..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Filtrele
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Temizle
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Giriş Tarihi</th>
+                        <th>Çıkış Tarihi</th>
+                        <th>Saat</th>
+                        <th>Müşteri</th>
+                        <th>E-posta</th>
+                        <th>Telefon</th>
+                        <th>Kişi Sayısı</th>
+                        <th>Masa</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var reservation in Model)
+                        {
+                            <tr>
+                                <td>@reservation.CheckInDate.ToString("dd.MM.yyyy")</td>
+                                <td>@reservation.CheckOutDate.ToString("dd.MM.yyyy")</td>
+                                <td>@reservation.ReservationTime.ToString("HH:mm")</td>
+                                <td>@reservation.FullName</td>
+                                <td>@reservation.Email</td>
+                                <td>@reservation.Phone</td>
+                                <td>@reservation.GuestCount</td>
+                                <td>
+                                    @if (reservation.Table != null)
+                                    {
+                                        @reservation.Table.TableNumber
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Atanmadı</span>
+                                    }
+                                </td>
+                                <td>
+                                    @switch (reservation.Status)
+                                    {
+                                        case HarborRestaurant.Entities.Enums.ReservationStatus.Pending:
+                                            <span class="badge bg-warning">Beklemede</span>
+                                            break;
+                                        case HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed:
+                                            <span class="badge bg-success">Onaylandı</span>
+                                            break;
+                                        case HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled:
+                                            <span class="badge bg-danger">İptal</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary">@reservation.Status</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="@Url.Action("Details", new { id = reservation.ReservationId })" class="btn btn-sm btn-info" title="Detay">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("Edit", new { id = reservation.ReservationId })" class="btn btn-sm btn-warning" title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        @if (reservation.Status == HarborRestaurant.Entities.Enums.ReservationStatus.Pending)
+                                        {
+                                            <form asp-area="Admin" asp-controller="Reservations" asp-action="Confirm" asp-route-id="@reservation.ReservationId" method="get" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-success" title="Onayla">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                            <form asp-area="Admin" asp-controller="Reservations" asp-action="Cancel" asp-route-id="@reservation.ReservationId" method="get" class="d-inline" onsubmit="return confirm('Rezervasyonu iptal etmek istediğinize emin misiniz?');">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="İptal Et">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        <form asp-area="Admin" asp-controller="Reservations" asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Bu rezervasyonu silmek istediğinizden emin misiniz?');">
+                                            <input type="hidden" name="id" value="@reservation.ReservationId" />
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Sil">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="10" class="text-center text-muted">Henüz rezervasyon bulunmuyor.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Otomatik yenileme (30 saniyede bir)
+    setTimeout(() => {
+        location.reload();
+    }, 30000);
+</script>

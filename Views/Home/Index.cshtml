@@ -1,0 +1,456 @@
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<HarborRestaurant.SharedResource> Localizer
+@{
+    ViewData["Title"] = Localizer["Nav.Home"];
+}
+
+@{
+    var home = ViewBag.HomePage as HarborRestaurant.Entities.Concrete.HomePage;
+    var specialItems = ViewBag.SpecialItems as IEnumerable<HarborRestaurant.Entities.Concrete.MenuItem>;
+    var rooms = ViewBag.Rooms as IEnumerable<HarborRestaurant.Entities.Concrete.Room>;
+    var posts = ViewBag.RecentPosts as IEnumerable<HarborRestaurant.Entities.Concrete.BlogPost>;
+    var isEnglish = ViewBag.IsEnglish as bool? ?? false;
+}
+
+<!-- Hero Section with Slider -->
+<div class="hero">
+    <section class="home-slider owl-carousel">
+        <div class="slider-item" style="background-image:url('@(home?.HeroImageUrl ?? "/images/bg_1.jpg")');">
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row no-gutters slider-text align-items-center justify-content-end">
+                    <div class="col-md-6 ftco-animate">
+                        <div class="text">
+                            <h2>@(isEnglish && !string.IsNullOrEmpty(home?.SubtitleEn) ? home.SubtitleEn : (home?.Subtitle ?? Localizer["Home.Hero.Subtitle"]))</h2>
+                            <h1 class="mb-3">@(isEnglish && !string.IsNullOrEmpty(home?.MainTitleEn) ? home.MainTitleEn : (home?.MainTitle ?? Localizer["Home.Hero.Title"]))</h1>
+                            <p class="mb-4">@(isEnglish && !string.IsNullOrEmpty(home?.DescriptionEn) ? home.DescriptionEn : (home?.Description ?? Localizer["CompanyExperience"]))</p>
+                            <p>
+                                <a href="@(home?.ButtonUrl ?? Url.Action("Index", "Reservation"))" class="btn btn-primary px-4 py-3">@(isEnglish && !string.IsNullOrEmpty(home?.ButtonTextEn) ? home.ButtonTextEn : (home?.ButtonText ?? Localizer["MakeReservation"]))</a>
+                                <a href="@Url.Action("Index", "Menu")" class="btn btn-white btn-outline-white px-4 py-3">@Localizer["ViewMenu"]</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slider-item" style="background-image:url('/images/bg_2.jpg');">
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row no-gutters slider-text align-items-center justify-content-end">
+                    <div class="col-md-6 ftco-animate">
+                        <div class="text">
+                            <h2>Harborlights</h2>
+                            <h1 class="mb-3">@Localizer["Home.Hero.Service"]</h1>
+                            <p class="mb-4">@(isEnglish && !string.IsNullOrEmpty(home?.DescriptionEn) ? home.DescriptionEn : (home?.Description ?? Localizer["CompanyExperience"]))</p>
+                            <p><a href="@Url.Action("Index", "About")" class="btn btn-primary px-4 py-3">@Localizer["Nav.About"]</a> <a href="@Url.Action("Index", "Contact")" class="btn btn-white btn-outline-white px-4 py-3">@Localizer["Nav.Contact"]</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Booking Form Section -->
+<section class="ftco-booking ftco-section ftco-no-pt ftco-no-pb">
+    <div class="container">
+        <div class="row no-gutters">
+            <div class="col-lg-12">
+                
+                <!-- Mesaj Alanları -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <form action="@Url.Action("Index", "Rooms")" method="get" class="booking-form aside-stretch">
+                    <div class="row">
+                        <div class="col-md d-flex py-md-4">
+                            <div class="form-group align-self-stretch d-flex align-items-end">
+                                <div class="wrap align-self-stretch py-3 px-4">
+                                    <label for="#">@Localizer["Home.BookingForm.CheckIn"]</label>
+                                    <input type="date" class="form-control" name="CheckInDate" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md d-flex py-md-4">
+                            <div class="form-group align-self-stretch d-flex align-items-end">
+                                <div class="wrap align-self-stretch py-3 px-4">
+                                    <label for="#">@Localizer["Home.BookingForm.CheckOut"]</label>
+                                    <input type="date" class="form-control" name="CheckOutDate" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md d-flex py-md-4">
+                            <div class="form-group align-self-stretch d-flex align-items-end">
+                                <div class="wrap align-self-stretch py-3 px-4">
+                                    <label for="#">@Localizer["Home.BookingForm.Time"]</label>
+                                    <input type="time" class="form-control" name="ReservationTime" value="19:00">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md d-flex py-md-4">
+                            <div class="form-group align-self-stretch d-flex align-items-end">
+                                <div class="wrap align-self-stretch py-3 px-4">
+                                    <label for="#">@Localizer["Home.BookingForm.Guests"]</label>
+                                    <div class="form-field">
+                                        <div class="select-wrap">
+                                            <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                            <select name="GuestCount" class="form-control" required>
+                                                <option value="">@Localizer["Common.Select"]</option>
+                                                <option value="1">1 @Localizer["Common.Person"]</option>
+                                                <option value="2" selected>2 @Localizer["Common.Person"]</option>
+                                                <option value="3">3 @Localizer["Common.Person"]</option>
+                                                <option value="4">4 @Localizer["Common.Person"]</option>
+                                                <option value="5">5+ @Localizer["Common.Person"]</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md d-flex">
+                            <div class="form-group d-flex align-self-stretch">
+                                <input type="submit" value="@Localizer["Home.BookingForm.FindRooms"]" class="btn btn-primary py-5 px-4">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="ftco-section">
+    <div class="container">
+        <div class="row d-flex">
+            <div class="col-md pr-md-1 d-flex align-self-stretch ftco-animate">
+                <div class="media block-6 services py-4 d-block text-center">
+                    <div class="d-flex justify-content-center">
+                        <div class="icon d-flex align-items-center justify-content-center">
+                            <span class="flaticon-cutlery"></span>
+                        </div>
+                    </div>
+                    <div class="media-body">
+                        <h3 class="heading mb-3">@Localizer["Home.Services.Food"]</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md px-md-1 d-flex align-self-stretch ftco-animate">
+                <div class="media block-6 services py-4 d-block text-center">
+                    <div class="d-flex justify-content-center">
+                        <div class="icon d-flex align-items-center justify-content-center">
+                            <span class="flaticon-spa"></span>
+                        </div>
+                    </div>
+                    <div class="media-body">
+                        <h3 class="heading mb-3">@Localizer["Home.Services.Atmosphere"]</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md pl-md-1 d-flex align-self-stretch ftco-animate">
+                <div class="media block-6 services py-4 d-block text-center">
+                    <div class="d-flex justify-content-center">
+                        <div class="icon d-flex align-items-center justify-content-center">
+                            <span class="ion-ios-bed"></span>
+                        </div>
+                    </div>
+                    <div class="media-body">
+                        <h3 class="heading mb-3">@Localizer["Home.Services.Service"]</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="ftco-section ftco-wrap-about ftco-no-pt ftco-no-pb">
+    <div class="container">
+        <div class="row no-gutters">
+            <div class="col-md-7 order-md-last d-flex">
+                <div class="img img-1 mr-md-2 ftco-animate" style="background-image: url('/images/about-1.jpg');"></div>
+                <div class="img img-2 ml-md-2 ftco-animate" style="background-image: url('/images/about-2.jpg');"></div>
+            </div>
+            <div class="col-md-5 wrap-about pb-md-3 ftco-animate pr-md-5 pb-md-5 pt-md-4">
+                <div class="heading-section mb-4 my-5 my-md-0">
+                    <span class="subheading">@Localizer["About.Harborlights"]</span>
+                    <h2 class="mb-4">@Localizer["About.MainTitle"]</h2>
+                </div>
+                <p>@Localizer["About.Description"]</p>
+                <p>@Localizer["ChefExperience"]</p>
+                <p><a href="@Url.Action("Index", "Reservation")" class="btn btn-secondary rounded">@Localizer["BookYourTable"]</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Rooms Section -->
+<section class="ftco-section ftco-no-pb ftco-room">
+    <div class="container-fluid px-0">
+        <div class="row no-gutters justify-content-center mb-5 pb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <span class="subheading">@Localizer["Home.Rooms.Title"]</span>
+                <h2 class="mb-4">@Localizer["Home.Rooms.Subtitle"]</h2>
+            </div>
+        </div>
+        <div class="row no-gutters">
+            @if (rooms != null && rooms.Any())
+            {
+                foreach (var room in rooms)
+                {
+                    <div class="col-lg-6">
+                        <div class="room-wrap d-md-flex ftco-animate">
+                            <a href="@Url.Action("Details", "Rooms", new { id = room.RoomId })" class="img" style="background-image: url('@(string.IsNullOrWhiteSpace(room.ImageUrl) ? "/images/room-1.jpg" : room.ImageUrl)');"></a>
+                            <div class="half left-arrow d-flex align-items-center">
+                                <div class="text p-4 text-center">
+                                    <p class="star mb-0">
+                                        @for (int i = 0; i < (room.StarRating > 0 ? room.StarRating : 5); i++)
+                                        {
+                                            <span class="ion-ios-star"></span>
+                                        }
+                                    </p>
+                                    <p class="mb-0">
+                                        @if (room.MinimumOrderAmount.HasValue)
+                                        {
+                                            <span class="price mr-1">₺@room.MinimumOrderAmount.Value.ToString("0")</span>
+                                            <span class="per">@Localizer["Home.Rooms.MinOrder"]</span>
+                                        }
+                                    </p>
+                                    <h3 class="mb-3"><a href="@Url.Action("Details", "Rooms", new { id = room.RoomId })">@(isEnglish && !string.IsNullOrEmpty(room.NameEn) ? room.NameEn : room.Name)</a></h3>
+                                    <p class="pt-1"><a href="@Url.Action("Index", "Reservation", new { RoomId = room.RoomId })" class="btn-custom px-3 py-2 rounded">@Localizer["Home.Rooms.BookThisRoom"] <span class="icon-long-arrow-right"></span></a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center text-muted pb-5">@Localizer["Home.Rooms.NoRooms"]</div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Menu Section -->
+<section class="ftco-section ftco-menu bg-light">
+    <div class="container-fluid px-md-4">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <span class="subheading">@Localizer["Home.Menu.Restaurant"]</span>
+                <h2>@Localizer["Home.Menu.RestaurantMenu"]</h2>
+            </div>
+        </div>
+        <div class="row">
+            @if (specialItems != null && specialItems.Any())
+            {
+                foreach (var item in specialItems)
+                {
+                    <div class="col-lg-6 col-xl-4 d-flex">
+                        <div class="pricing-entry rounded d-flex ftco-animate">
+                            <div class="img" style="background-image: url('@(string.IsNullOrWhiteSpace(item.ImageUrl) ? "/images/menu-1.jpg" : item.ImageUrl)');"></div>
+                            <div class="desc p-4">
+                                <div class="d-md-flex text align-items-start">
+                                    <h3><span>@(isEnglish && !string.IsNullOrEmpty(item.NameEn) ? item.NameEn : item.Name)</span></h3>
+                                    <span class="price">₺@item.Price.ToString("0.##")</span>
+                                </div>
+                                <div class="d-block">
+                                    <p>@(isEnglish && !string.IsNullOrEmpty(item.DescriptionEn) ? item.DescriptionEn : (string.IsNullOrWhiteSpace(item.Description) ? item.Ingredients : item.Description))</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center text-muted pb-4">@Localizer["Home.Menu.NoItems"]</div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Recent Blog Posts -->
+@if (posts != null && posts.Any())
+{
+    <section class="ftco-section bg-light">
+        <div class="container">
+            <div class="row justify-content-center mb-5 pb-3">
+                <div class="col-md-7 heading-section text-center ftco-animate">
+                    <span class="subheading">@Localizer["Blog.Title"]</span>
+                    <h2 class="mb-4">@Localizer["Home.Blog.RecentPosts"]</h2>
+                </div>
+            </div>
+            <div class="row d-flex">
+                @foreach (var p in posts)
+                {
+                    <div class="col-md-4 d-flex ftco-animate">
+                        <div class="blog-entry align-self-stretch">
+                            <a href="@Url.Action("Detail", "Blog", new { id = p.PostId })" class="block-20" style="background-image: url('@(string.IsNullOrWhiteSpace(p.ImageUrl) ? "/images/image_1.jpg" : p.ImageUrl)');">
+                            </a>
+                            <div class="text p-4 d-block">
+                                <h3 class="heading mt-3"><a href="@Url.Action("Detail", "Blog", new { id = p.PostId })">@(isEnglish && !string.IsNullOrEmpty(p.TitleEn) ? p.TitleEn : p.Title)</a></h3>
+                                @{
+                                    var summary = isEnglish && !string.IsNullOrEmpty(p.SummaryEn) ? p.SummaryEn : p.Summary;
+                                }
+                                @if (!string.IsNullOrWhiteSpace(summary))
+                                {
+                                    <p>@summary</p>
+                                }
+                                <div class="meta mb-3">
+                                    <div><span class="icon-person"></span> @(string.IsNullOrWhiteSpace(p.Author) ? "Admin" : p.Author)</div>
+                                    <div><span class="icon-calendar"></span> @p.CreatedDate.ToString("dd.MM.yyyy")</div>
+                                    <div><span class="icon-eye"></span> @p.ViewCount görüntüleme</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Testimonial Section (opsiyonel statik bırakıldı) -->
+<section class="testimony-section">
+    <div class="container">
+        <div class="row no-gutters ftco-animate justify-content-center">
+            <div class="col-md-5 d-flex">
+                <div class="testimony-img aside-stretch-2" style="background-image: url('/images/testimony-img.jpg');"></div>
+            </div>
+            <div class="col-md-7 py-5 pl-md-5">
+                <div class="py-md-5">
+                    <div class="heading-section ftco-animate mb-4">
+                        <span class="subheading">@Localizer["CustomerReviews"]</span>
+                        <h2 class="mb-0">@Localizer["HappyCustomers"]</h2>
+                    </div>
+                    <div class="carousel-testimony owl-carousel ftco-animate">
+                        <div class="item">
+                            <div class="testimony-wrap pb-4">
+                                <div class="text">
+                                    <p class="mb-4">@Localizer["CustomerReview1"]</p>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="user-img" style="background-image: url('/images/person_1.jpg')">
+                                    </div>
+                                    <div class="pos ml-3">
+                                        <p class="name">Ayşe Demir</p>
+                                        <span class="position">@Localizer["Customer"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="testimony-wrap pb-4">
+                                <div class="text">
+                                    <p class="mb-4">@Localizer["CustomerReview2"]</p>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="user-img" style="background-image: url('/images/person_2.jpg')">
+                                    </div>
+                                    <div class="pos ml-3">
+                                        <p class="name">Mehmet Yılmaz</p>
+                                        <span class="position">@Localizer["Customer"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="testimony-wrap pb-4">
+                                <div class="text">
+                                    <p class="mb-4">@Localizer["CustomerReview3"]</p>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="user-img" style="background-image: url('/images/person_3.jpg')">
+                                    </div>
+                                    <div class="pos ml-3">
+                                        <p class="name">Elif Kaya</p>
+                                        <span class="position">@Localizer["Customer"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="testimony-wrap pb-4">
+                                <div class="text">
+                                    <p class="mb-4">@Localizer["CustomerReview4"]</p>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="user-img" style="background-image: url('/images/person_4.jpg')">
+                                    </div>
+                                    <div class="pos ml-3">
+                                        <p class="name">Ahmet Özkan</p>
+                                        <span class="position">@Localizer["Customer"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Instagram Section (statik placeholder) -->
+<section class="instagram">
+    <div class="container-fluid">
+        <div class="row no-gutters justify-content-center pb-5">
+            <div class="col-md-7 text-center heading-section ftco-animate">
+                <span class="subheading">Instagram</span>
+                <h2><span>Instagram'da</span> Takip Edin</h2>
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col-sm-12 col-md ftco-animate">
+                <a href="/images/insta-1.jpg" class="insta-img image-popup" style="background-image: url('/images/insta-1.jpg');">
+                    <div class="icon d-flex justify-content-center">
+                        <span class="icon-instagram align-self-center"></span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-12 col-md ftco-animate">
+                <a href="/images/insta-2.jpg" class="insta-img image-popup" style="background-image: url('/images/insta-2.jpg');">
+                    <div class="icon d-flex justify-content-center">
+                        <span class="icon-instagram align-self-center"></span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-12 col-md ftco-animate">
+                <a href="/images/insta-3.jpg" class="insta-img image-popup" style="background-image: url('/images/insta-3.jpg');">
+                    <div class="icon d-flex justify-content-center">
+                        <span class="icon-instagram align-self-center"></span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-12 col-md ftco-animate">
+                <a href="/images/insta-4.jpg" class="insta-img image-popup" style="background-image: url('/images/insta-4.jpg');">
+                    <div class="icon d-flex justify-content-center">
+                        <span class="icon-instagram align-self-center"></span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-12 col-md ftco-animate">
+                <a href="/images/insta-5.jpg" class="insta-img image-popup" style="background-image: url('/images/insta-5.jpg');">
+                    <div class="icon d-flex justify-content-center">
+                        <span class="icon-instagram align-self-center"></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

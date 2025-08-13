@@ -1,0 +1,209 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.ContactMessage>
+
+@{
+    ViewData["Title"] = "İletişim Mesajları";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-envelope"></i> İletişim Mesajları</h2>
+    <div>
+        @if (ViewBag.UnreadCount > 0)
+        {
+            <span class="badge bg-danger me-2">@ViewBag.UnreadCount Okunmamış</span>
+        }
+        <span class="text-muted">Toplam: @ViewBag.TotalCount</span>
+    </div>
+</div>
+
+<!-- Filtreler -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="btn-group" role="group">
+                    <a href="@Url.Action("Index")" class="btn btn-outline-primary @(ViewBag.IsRead == null ? "active" : "")">
+                        <i class="fas fa-list"></i> Tümü (@ViewBag.TotalCount)
+                    </a>
+                    <a href="@Url.Action("Index", new { isRead = false })" class="btn btn-outline-warning @(ViewBag.IsRead == false ? "active" : "")">
+                        <i class="fas fa-eye-slash"></i> Okunmamış (@ViewBag.UnreadCount)
+                    </a>
+                    <a href="@Url.Action("Index", new { isRead = true })" class="btn btn-outline-success @(ViewBag.IsRead == true ? "active" : "")">
+                        <i class="fas fa-check"></i> Okunmuş (@(ViewBag.TotalCount - ViewBag.UnreadCount))
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th width="5%">
+                            <input type="checkbox" id="selectAll" class="form-check-input">
+                        </th>
+                        <th width="15%">Tarih</th>
+                        <th width="20%">Gönderen</th>
+                        <th width="20%">E-posta</th>
+                        <th width="25%">Konu</th>
+                        <th width="10%">Durum</th>
+                        <th width="15%">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var message in Model)
+                        {
+                            <tr class="@(!message.IsRead ? "table-warning" : "")">
+                                <td>
+                                    <input type="checkbox" name="messageIds" value="@message.ContactMessageId" class="form-check-input">
+                                </td>
+                                <td>
+                                    <small>@message.SentDate.ToString("dd.MM.yyyy")</small><br>
+                                    <small class="text-muted">@message.SentDate.ToString("HH:mm")</small>
+                                </td>
+                                <td>
+                                    <strong>@message.FullName</strong>
+                                    @if (!message.IsRead)
+                                    {
+                                        <i class="fas fa-circle text-warning ms-1" style="font-size: 8px;"></i>
+                                    }
+                                </td>
+                                <td>
+                                    <a href="mailto:@message.Email" class="text-decoration-none">@message.Email</a>
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Details", new { id = message.ContactMessageId })" class="text-decoration-none">
+                                        @if (message.Subject?.Length > 40)
+                                        {
+                                            @(message.Subject.Substring(0, 40) + "...")
+                                        }
+                                        else
+                                        {
+                                            @message.Subject
+                                        }
+                                    </a>
+                                </td>
+                                <td>
+                                    @if (message.IsReplied)
+                                    {
+                                        <span class="badge bg-success">Yanıtlandı</span>
+                                    }
+                                    else if (message.IsRead)
+                                    {
+                                        <span class="badge bg-info">Okundu</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">Yeni</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="@Url.Action("Details", new { id = message.ContactMessageId })" 
+                                           class="btn btn-outline-info" title="Görüntüle">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="@Url.Action("Reply", new { id = message.ContactMessageId })" 
+                                           class="btn btn-outline-primary" title="Yanıtla">
+                                            <i class="fas fa-reply"></i>
+                                        </a>
+                                        <form method="post" asp-action="Delete" asp-route-id="@message.ContactMessageId" 
+                                              style="display: inline;" onsubmit="return confirm('Bu mesajı silmek istediğinizden emin misiniz?')">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Sil">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                Henüz mesaj bulunmuyor.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        @if (Model != null && Model.Any())
+        {
+            <!-- Toplu İşlemler -->
+            <div class="border-top pt-3 mt-3">
+                <form method="post" asp-action="BulkAction" id="bulkActionForm">
+                    @Html.AntiForgeryToken()
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <select name="action" class="form-select" required>
+                                    <option value="">Toplu işlem seçin...</option>
+                                    <option value="markread">Okundu olarak işaretle</option>
+                                    <option value="markunread">Okunmadı olarak işaretle</option>
+                                    <option value="delete">Sil</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-play"></i> Uygula
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <small class="text-muted" id="selectedCount">0 mesaj seçildi</small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Tümünü seç/seçme
+    $('#selectAll').on('change', function() {
+        $('input[name="messageIds"]').prop('checked', $(this).prop('checked'));
+        updateSelectedCount();
+    });
+
+    // Tekli seçim
+    $('input[name="messageIds"]').on('change', function() {
+        updateSelectedCount();
+        $('#selectAll').prop('checked', $('input[name="messageIds"]:checked').length === $('input[name="messageIds"]').length);
+    });
+
+    // Seçilen sayısını güncelle
+    function updateSelectedCount() {
+        var count = $('input[name="messageIds"]:checked').length;
+        $('#selectedCount').text(count + ' mesaj seçildi');
+    }
+
+    // Form gönderim kontrolü
+    $('#bulkActionForm').on('submit', function(e) {
+        var selectedCount = $('input[name="messageIds"]:checked').length;
+        var action = $('select[name="action"]').val();
+        
+        if (selectedCount === 0) {
+            e.preventDefault();
+            alert('Lütfen en az bir mesaj seçin.');
+            return false;
+        }
+
+        if (action === 'delete') {
+            if (!confirm(selectedCount + ' mesajı silmek istediğinizden emin misiniz?')) {
+                e.preventDefault();
+                return false;
+            }
+        }
+    });
+});
+</script>

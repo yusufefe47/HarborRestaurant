@@ -1,0 +1,139 @@
+@model HarborRestaurant.Models.ViewModels.CreateUserViewModel
+
+@{
+    ViewData["Title"] = "Yeni Kullanıcı";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Yeni Kullanıcı</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard")">Ana Sayfa</a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Users")">Kullanıcı Yönetimi</a></li>
+                        <li class="breadcrumb-item active">Yeni Kullanıcı</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Kullanıcı Bilgileri</h3>
+                        </div>
+                        <form asp-action="Create" method="post">
+                            <div class="card-body">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="FirstName" class="control-label"></label>
+                                            <input asp-for="FirstName" class="form-control" />
+                                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="LastName" class="control-label"></label>
+                                            <input asp-for="LastName" class="form-control" />
+                                            <span asp-validation-for="LastName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Email" class="control-label"></label>
+                                    <input asp-for="Email" class="form-control" type="email" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="PhoneNumber" class="control-label"></label>
+                                    <input asp-for="PhoneNumber" class="form-control" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="Password" class="control-label"></label>
+                                            <input asp-for="Password" class="form-control" type="password" />
+                                            <span asp-validation-for="Password" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="ConfirmPassword" class="control-label"></label>
+                                            <input asp-for="ConfirmPassword" class="form-control" type="password" />
+                                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Role" class="control-label"></label>
+                                    <select asp-for="Role" class="form-control">
+                                        <option value="">Rol Seçiniz...</option>
+                                        @if (ViewBag.Roles != null)
+                                        {
+                                            @foreach (var role in (List<Microsoft.AspNetCore.Identity.IdentityRole>)ViewBag.Roles)
+                                            {
+                                                <option value="@role.Name">@role.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Role" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Kaydet
+                                </button>
+                                <a asp-action="Index" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Geri Dön
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">Bilgilendirme</h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Şifre Kuralları:</strong></p>
+                            <ul>
+                                <li>En az 6 karakter olmalıdır</li>
+                                <li>Güçlü şifre kullanmanız önerilir</li>
+                            </ul>
+                            
+                            <p><strong>Roller:</strong></p>
+                            <ul>
+                                <li><strong>Admin:</strong> Tam yetki</li>
+                                <li><strong>User:</strong> Sınırlı yetki</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

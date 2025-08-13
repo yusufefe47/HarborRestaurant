@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Test Admin Oluştur";
+}
+
+<section class="hero-wrap hero-wrap-2" style="background-image: url('/images/bg_3.jpg');" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-end justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <h1 class="mb-2 bread">Test Admin Oluştur</h1>
+                <p class="breadcrumbs"><span class="mr-2"><a href="@Url.Action("Index", "Home")">Anasayfa <i class="ion-ios-arrow-forward"></i></a></span> <span>Test Admin</span></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Geliştirme Aşaması - Test Admin</h4>
+                        <div class="alert alert-info">
+                            <i class="ion-ios-information-circle"></i>
+                            Bu sayfa sadece geliştirme aşamasında test amaçlı kullanılmaktadır.
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="mb-4">Test için admin kullanıcısı oluşturmak üzere aşağıdaki butona tıklayın:</p>
+                            
+                            <a href="@Url.Action("CreateAdmin", "Account")" class="btn btn-primary btn-lg">
+                                <i class="ion-ios-person-add"></i> Test Admin Oluştur
+                            </a>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="alert alert-warning">
+                                <strong>Test Admin Bilgileri:</strong><br>
+                                Email: admin@harbor.com<br>
+                                Şifre: Admin123!
+                            </div>
+                            
+                            <a href="@Url.Action("Login", "Account")" class="btn btn-outline-primary">
+                                <i class="ion-ios-log-in"></i> Admin Girişi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

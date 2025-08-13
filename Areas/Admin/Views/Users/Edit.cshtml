@@ -1,0 +1,173 @@
+@model HarborRestaurant.Models.ViewModels.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Kullanıcı Düzenle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Kullanıcı Düzenle</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard")">Ana Sayfa</a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Users")">Kullanıcı Yönetimi</a></li>
+                        <li class="breadcrumb-item active">Düzenle</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Kullanıcı Bilgileri</h3>
+                        </div>
+                        <form asp-action="Edit" method="post">
+                            <input asp-for="Id" type="hidden" />
+                            <div class="card-body">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                                <div class="form-group">
+                                    <label asp-for="UserName" class="control-label"></label>
+                                    <input asp-for="UserName" class="form-control" readonly />
+                                    <small class="form-text text-muted">Kullanıcı adı değiştirilemez</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Email" class="control-label"></label>
+                                    <input asp-for="Email" class="form-control" type="email" readonly />
+                                    <small class="form-text text-muted">E-posta adresi değiştirilemez</small>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="FirstName" class="control-label"></label>
+                                            <input asp-for="FirstName" class="form-control" />
+                                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="LastName" class="control-label"></label>
+                                            <input asp-for="LastName" class="form-control" />
+                                            <span asp-validation-for="LastName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="PhoneNumber" class="control-label"></label>
+                                    <input asp-for="PhoneNumber" class="form-control" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox">
+                                                <input asp-for="EmailConfirmed" class="custom-control-input" />
+                                                <label asp-for="EmailConfirmed" class="custom-control-label"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox">
+                                                <input asp-for="IsActive" class="custom-control-input" />
+                                                <label asp-for="IsActive" class="custom-control-label"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Mevcut Rol</label>
+                                            <input value="@(Model.CurrentRole ?? "Rol Yok")" class="form-control" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="NewRole" class="control-label"></label>
+                                            <select asp-for="NewRole" class="form-control">
+                                                <option value="">Rol Seçiniz...</option>
+                                                @if (ViewBag.Roles != null)
+                                                {
+                                                    @foreach (var role in (List<Microsoft.AspNetCore.Identity.IdentityRole>)ViewBag.Roles)
+                                                    {
+                                                        <option value="@role.Name" selected="@(role.Name == Model.CurrentRole)">@role.Name</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <span asp-validation-for="NewRole" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Güncelle
+                                </button>
+                                <a asp-action="Index" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Geri Dön
+                                </a>
+                                <a asp-action="ChangePassword" asp-route-id="@Model.Id" class="btn btn-warning">
+                                    <i class="fas fa-key"></i> Şifre Değiştir
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">Kullanıcı Bilgileri</h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>E-posta:</strong> @Model.Email</p>
+                            <p><strong>Kullanıcı Adı:</strong> @Model.UserName</p>
+                            <p><strong>Mevcut Rol:</strong> @(Model.CurrentRole ?? "Rol Yok")</p>
+                            <p><strong>Durum:</strong> 
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge badge-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">Pasif</span>
+                                }
+                            </p>
+                            <p><strong>E-posta Onayı:</strong> 
+                                @if (Model.EmailConfirmed)
+                                {
+                                    <span class="badge badge-success">Onaylı</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-warning">Bekliyor</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

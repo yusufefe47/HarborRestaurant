@@ -1,0 +1,349 @@
+@model HarborRestaurant.Entities.Concrete.BlogPost
+@{
+    ViewData["Title"] = "Blog Yazısı Düzenle";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Blog Yazısı Düzenle</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Home")">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("Posts", "Blog")">Blog Yazıları</a></li>
+                        <li class="breadcrumb-item active">Düzenle</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-edit"></i> Blog Yazısı Bilgileri
+                            </h3>
+                            <div class="card-tools">
+                                <a href="@Url.Action("Posts", "Blog")" class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-list"></i> Yazılar Listesi
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <form asp-action="EditPost" asp-controller="Blog" method="post" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="PostId" />
+                            <input type="hidden" asp-for="ViewCount" />
+                            <input type="hidden" asp-for="CreatedDate" />
+                            <input type="hidden" asp-for="Author" />
+                            <input type="hidden" asp-for="ImageUrl" />
+                            
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label asp-for="Title" class="form-label">Başlık <span class="text-danger">*</span></label>
+                                            <input asp-for="Title" class="form-control" placeholder="Blog yazısının başlığını girin" required />
+                                            <span asp-validation-for="Title" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label asp-for="Summary" class="form-label">Özet</label>
+                                            <textarea asp-for="Summary" class="form-control" rows="3" placeholder="Blog yazısının kısa özetini girin"></textarea>
+                                            <span asp-validation-for="Summary" class="text-danger"></span>
+                                            <small class="form-text text-muted">Bu özet liste sayfalarında görüntülenecektir.</small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label asp-for="Content" class="form-label">İçerik <span class="text-danger">*</span></label>
+                                            <textarea asp-for="Content" class="form-control" rows="15" placeholder="Blog yazısının içeriğini girin" required></textarea>
+                                            <span asp-validation-for="Content" class="text-danger"></span>
+                                        </div>
+
+                                        <!-- SEO Bilgileri -->
+                                        <div class="card mt-4">
+                                            <div class="card-header">
+                                                <h5 class="card-title">
+                                                    <i class="fas fa-search"></i> SEO Bilgileri
+                                                </h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label asp-for="MetaTitle" class="form-label">Meta Başlık</label>
+                                                    <input asp-for="MetaTitle" class="form-control" placeholder="SEO için meta başlık" />
+                                                    <span asp-validation-for="MetaTitle" class="text-danger"></span>
+                                                    <small class="form-text text-muted">Boş bırakılırsa yazı başlığı kullanılır.</small>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="MetaDescription" class="form-label">Meta Açıklama</label>
+                                                    <textarea asp-for="MetaDescription" class="form-control" rows="2" placeholder="SEO için meta açıklama"></textarea>
+                                                    <span asp-validation-for="MetaDescription" class="text-danger"></span>
+                                                    <small class="form-text text-muted">Boş bırakılırsa özet kullanılır.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="card-title">
+                                                    <i class="fas fa-cog"></i> Yazı Ayarları
+                                                </h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label asp-for="CategoryId" class="form-label">Kategori <span class="text-danger">*</span></label>
+                                                    <select asp-for="CategoryId" class="form-control" required>
+                                                        <option value="">Kategori Seçin</option>
+                                                        @if (ViewBag.Categories != null)
+                                                        {
+                                                            @foreach (var category in ViewBag.Categories)
+                                                            {
+                                                                <option value="@category.CategoryId">@category.Name</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="form-label">Öne Çıkan Resim</label>
+                                                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                                    {
+                                                        <div class="mb-3">
+                                                            <img src="@Model.ImageUrl" class="img-fluid rounded" alt="Mevcut resim" style="max-height: 150px;">
+                                                            <p class="text-muted small mt-1">Mevcut resim</p>
+                                                        </div>
+                                                    }
+                                                    <input type="file" name="featuredImage" class="form-control" accept="image/*" />
+                                                    <small class="form-text text-muted">
+                                                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                                        {
+                                                            <span>Yeni resim seçerseniz mevcut resim değiştirilecek.</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>JPG, PNG veya GIF formatında resim yükleyebilirsiniz.</span>
+                                                        }
+                                                    </small>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="form-check">
+                                                        <input asp-for="IsFeatured" class="form-check-input" type="checkbox" />
+                                                        <label asp-for="IsFeatured" class="form-check-label">
+                                                            Öne Çıkan Yazı
+                                                        </label>
+                                                    </div>
+                                                    <small class="form-text text-muted">Öne çıkan yazılar ana sayfada görüntülenir.</small>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div class="form-check">
+                                                        <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                                                        <label asp-for="IsActive" class="form-check-label">
+                                                            Aktif
+                                                        </label>
+                                                    </div>
+                                                    <small class="form-text text-muted">Pasif yazılar sitede görüntülenmez.</small>
+                                                </div>
+
+                                                @if (Model.PublishedDate.HasValue)
+                                                {
+                                                    <div class="form-group">
+                                                        <label class="form-label">Yayın Tarihi</label>
+                                                        <input type="datetime-local" asp-for="PublishedDate" class="form-control" />
+                                                        <small class="form-text text-muted">Yazının yayınlanacağı tarih</small>
+                                                    </div>
+                                                }
+
+                                                <div class="form-group">
+                                                    <label class="form-label">İstatistikler</label>
+                                                    <ul class="list-unstyled small text-muted">
+                                                        <li><i class="fas fa-eye"></i> @Model.ViewCount görüntüleme</li>
+                                                        <li><i class="fas fa-calendar"></i> Oluşturulma: @Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</li>
+                                                        @if (Model.UpdatedDate.HasValue)
+                                                        {
+                                                            <li><i class="fas fa-edit"></i> Güncelleme: @Model.UpdatedDate.Value.ToString("dd.MM.yyyy HH:mm")</li>
+                                                        }
+                                                        <li><i class="fas fa-user"></i> Yazar: @Model.Author</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> Değişiklikleri Kaydet
+                                        </button>
+                                        <a href="@Url.Action("Posts", "Blog")" class="btn btn-secondary">
+                                            <i class="fas fa-times"></i> İptal
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <a href="@Url.Action("DetailPost", "Blog", new { id = Model.PostId })" class="btn btn-info">
+                                            <i class="fas fa-eye"></i> Yazıyı Görüntüle
+                                        </a>
+                                        <button type="button" class="btn btn-danger" onclick="deletePost(@Model.PostId)">
+                                            <i class="fas fa-trash"></i> Sil
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // TinyMCE Editor
+            tinymce.init({
+                selector: 'textarea[asp-for="Content"]',
+                height: 400,
+                plugins: [
+                    'advlist autolink lists link image charmap print preview anchor',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table paste code help wordcount'
+                ],
+                toolbar: 'undo redo | formatselect | bold italic backcolor | \
+                         alignleft aligncenter alignright alignjustify | \
+                         bullist numlist outdent indent | removeformat | help',
+                content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }'
+            });
+
+            // Form validation
+            $('form').on('submit', function(e) {
+                // TinyMCE content'ini textarea'ya aktar
+                tinymce.triggerSave();
+                
+                // Boş içerik kontrolü
+                var content = $('textarea[asp-for="Content"]').val();
+                if (!content || content.trim() === '') {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: 'Blog yazısı içeriği boş olamaz!'
+                    });
+                    return false;
+                }
+            });
+
+            // Title'dan MetaTitle oluştur
+            $('input[asp-for="Title"]').on('keyup', function() {
+                var title = $(this).val();
+                var metaTitle = $('input[asp-for="MetaTitle"]');
+                if (!metaTitle.val()) {
+                    metaTitle.val(title);
+                }
+            });
+
+            // Summary'den MetaDescription oluştur
+            $('textarea[asp-for="Summary"]').on('keyup', function() {
+                var summary = $(this).val();
+                var metaDescription = $('textarea[asp-for="MetaDescription"]');
+                if (!metaDescription.val()) {
+                    metaDescription.val(summary);
+                }
+            });
+
+            // Image preview
+            $('input[name="featuredImage"]').on('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Mevcut resmi güncelle veya yeni preview oluştur
+                        const existingImg = $('.card-body img');
+                        if (existingImg.length) {
+                            existingImg.attr('src', e.target.result);
+                            existingImg.next('p').text('Yeni seçilen resim (henüz kaydedilmedi)');
+                        } else {
+                            const preview = `
+                                <div class="mb-3">
+                                    <img src="${e.target.result}" class="img-fluid rounded" alt="Seçilen resim" style="max-height: 150px;">
+                                    <p class="text-muted small mt-1">Yeni seçilen resim (henüz kaydedilmedi)</p>
+                                </div>
+                            `;
+                            $('input[name="featuredImage"]').before(preview);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        function deletePost(id) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: "Bu blog yazısını silmek istediğinizden emin misiniz?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Evet, Sil!',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Form oluştur ve gönder
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '@Url.Action("DeletePost", "Blog")';
+                    
+                    const idInput = document.createElement('input');
+                    idInput.type = 'hidden';
+                    idInput.name = 'id';
+                    idInput.value = id;
+                    form.appendChild(idInput);
+                    
+                    const tokenInput = document.createElement('input');
+                    tokenInput.type = 'hidden';
+                    tokenInput.name = '__RequestVerificationToken';
+                    tokenInput.value = $('input[name="__RequestVerificationToken"]').val();
+                    form.appendChild(tokenInput);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .card-body img {
+            border: 2px dashed #dee2e6;
+            padding: 10px;
+        }
+        
+        .form-check-input:checked {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: ">";
+        }
+    </style>
+}

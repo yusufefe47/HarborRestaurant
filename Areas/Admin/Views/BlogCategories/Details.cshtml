@@ -1,0 +1,233 @@
+@model HarborRestaurant.Entities.Concrete.BlogCategory
+
+@{
+    ViewData["Title"] = "Kategori Detayları";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Kategori Detayları</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard")">Ana Sayfa</a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "BlogCategories")">Blog Kategorileri</a></li>
+                        <li class="breadcrumb-item active">Detaylar</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-tag"></i> @Model.Name
+                            </h3>
+                            <div class="card-tools">
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge badge-success">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">Pasif</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-3">Kategori Adı:</dt>
+                                <dd class="col-sm-9">@Model.Name</dd>
+
+                                <dt class="col-sm-3">Açıklama:</dt>
+                                <dd class="col-sm-9">
+                                    @if (!string.IsNullOrEmpty(Model.Description))
+                                    {
+                                        @Model.Description
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Açıklama bulunmuyor</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-3">Sıra Numarası:</dt>
+                                <dd class="col-sm-9">@Model.SortOrder</dd>
+
+                                <dt class="col-sm-3">Blog Sayısı:</dt>
+                                <dd class="col-sm-9">
+                                    <span class="badge badge-info">@(Model.BlogPosts?.Count ?? 0) Blog</span>
+                                </dd>
+
+                                <dt class="col-sm-3">Durum:</dt>
+                                <dd class="col-sm-9">
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge badge-success">
+                                            <i class="fas fa-check"></i> Aktif
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">
+                                            <i class="fas fa-times"></i> Pasif
+                                        </span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-3">Oluşturma Tarihi:</dt>
+                                <dd class="col-sm-9">@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                                @if (Model.UpdatedDate.HasValue)
+                                {
+                                    <dt class="col-sm-3">Güncelleme Tarihi:</dt>
+                                    <dd class="col-sm-9">@Model.UpdatedDate.Value.ToString("dd.MM.yyyy HH:mm")</dd>
+                                }
+                            </dl>
+                        </div>
+                        <div class="card-footer">
+                            <a asp-action="Edit" asp-route-id="@Model.CategoryId" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </a>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Geri Dön
+                            </a>
+                            <button type="button" class="btn btn-@(Model.IsActive ? "danger" : "success")" 
+                                    onclick="toggleActive(@Model.CategoryId, '@Model.Name')">
+                                <i class="fas fa-@(Model.IsActive ? "times" : "check")"></i> 
+                                @(Model.IsActive ? "Pasif Yap" : "Aktif Yap")
+                            </button>
+                            @if (Model.BlogPosts?.Count == 0)
+                            {
+                                <button type="button" class="btn btn-danger" 
+                                        onclick="deleteCategory(@Model.CategoryId, '@Model.Name')">
+                                    <i class="fas fa-trash"></i> Sil
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    @if (Model.BlogPosts?.Any() == true)
+                    {
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-blog"></i> Bu Kategorideki Blog Yazıları
+                                </h3>
+                            </div>
+                            <div class="card-body p-0">
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var post in Model.BlogPosts.OrderByDescending(x => x.CreatedDate))
+                                    {
+                                        <li class="list-group-item">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h6 class="mb-1">@post.Title</h6>
+                                                    <small class="text-muted">@post.CreatedDate.ToString("dd.MM.yyyy")</small>
+                                                </div>
+                                                @if (post.IsActive)
+                                                {
+                                                    <span class="badge badge-success">Aktif</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-secondary">Pasif</span>
+                                                }
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="card-footer text-center">
+                                <a href="@Url.Action("Index", "Blog")" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-blog"></i> Tüm Blog Yazıları
+                                </a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-info-circle"></i> Bilgilendirme
+                                </h3>
+                            </div>
+                            <div class="card-body text-center">
+                                <i class="fas fa-blog fa-3x text-muted mb-3"></i>
+                                <h5>Bu kategoride henüz blog yazısı yok</h5>
+                                <p class="text-muted">Bu kategoriye blog yazısı eklemek için blog yönetimi sayfasına gidin.</p>
+                                <a href="@Url.Action("Create", "Blog")" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Blog Yazısı Ekle
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Delete Form -->
+<form id="deleteForm" method="post" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<!-- Toggle Active Form -->
+<form id="toggleActiveForm" method="post" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <script>
+        function deleteCategory(id, name) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: `"${name}" kategorisini silmek istediğinizden emin misiniz?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Evet, Sil!',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('deleteForm');
+                    form.action = '@Url.Action("Delete", "BlogCategories")/' + id;
+                    form.submit();
+                }
+            });
+        }
+
+        function toggleActive(id, name) {
+            Swal.fire({
+                title: 'Durumu Değiştir',
+                text: `"${name}" kategorisinin durumunu değiştirmek istediğinizden emin misiniz?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Evet, Değiştir!',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('toggleActiveForm');
+                    form.action = '@Url.Action("ToggleActive", "BlogCategories")/' + id;
+                    form.submit();
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,265 @@
+@model HarborRestaurant.Entities.Concrete.MenuItem
+@{
+    ViewData["Title"] = "Ürün Düzenle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-edit me-2"></i>Ürün Düzenle
+    </h1>
+    <a href="@Url.Action("Items")" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i>Geri Dön
+    </a>
+</div>
+
+<form asp-action="EditItem" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Ürün Bilgileri</h6>
+                </div>
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <input type="hidden" asp-for="ItemId" />
+                    <input type="hidden" asp-for="CreatedDate" />
+                    <input type="hidden" asp-for="ImageUrl" />
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label asp-for="Name" class="form-label">Ürün Adı *</label>
+                            <input asp-for="Name" class="form-control" placeholder="Örn: Izgara Somon" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="CategoryId" class="form-label">Kategori *</label>
+                            <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories" required>
+                                <option value="">Kategori Seçin</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Açıklama</label>
+                        <textarea asp-for="Description" class="form-control" rows="4" 
+                                  placeholder="Ürün hakkında detaylı bilgi, malzemeler, pişirme yöntemi vb."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="Price" class="form-label">Fiyat (₺) *</label>
+                            <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" required />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="PreparationTime" class="form-label">Hazırlık Süresi (dk)</label>
+                            <input asp-for="PreparationTime" class="form-control" type="number" min="0" />
+                            <span asp-validation-for="PreparationTime" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Calories" class="form-label">Kalori</label>
+                            <input asp-for="Calories" class="form-control" type="number" min="0" />
+                            <span asp-validation-for="Calories" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Ingredients" class="form-label">İçindekiler / Malzemeler</label>
+                        <textarea asp-for="Ingredients" class="form-control" rows="2" 
+                                  placeholder="Somon, limon, zeytinyağı, tuz, karabiber, taze otlar"></textarea>
+                        <span asp-validation-for="Ingredients" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Yeni Ürün Resmi</label>
+                        <input type="file" name="imageFile" class="form-control" accept="image/*" />
+                        <small class="text-muted">JPG, PNG formatları desteklenir. Maksimum 5MB. Boş bırakırsanız mevcut resim korunur.</small>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsActive" class="form-check-label">
+                                    Aktif
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input asp-for="IsAvailable" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsAvailable" class="form-check-label">
+                                    Müsait
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input asp-for="IsFeatured" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsFeatured" class="form-check-label">
+                                    Öne Çıkan
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input asp-for="IsSpicy" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsSpicy" class="form-check-label">
+                                    Acı
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="@Url.Action("Items")" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times me-1"></i>İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Değişiklikleri Kaydet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">Mevcut Resim</h6>
+                </div>
+                <div class="card-body text-center">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded mb-2" style="max-height: 200px;">
+                        <br><small class="text-muted">Mevcut resim</small>
+                    }
+                    else
+                    {
+                        <div class="text-muted">
+                            <i class="fas fa-image fa-3x mb-2"></i>
+                            <p>Resim bulunmuyor</p>
+                        </div>
+                    }
+                    
+                    <hr>
+                    <img id="imagePreview" alt="Yeni Resim Önizlemesi" 
+                         class="img-fluid rounded" style="max-height: 200px; display: none;">
+                    <div id="noImagePlaceholder" class="text-muted" style="display: none;">
+                        <i class="fas fa-image fa-2x mb-2"></i>
+                        <p><small>Yeni resim önizlemesi</small></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">Ürün Bilgileri</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <tr>
+                            <td><strong>ID:</strong></td>
+                            <td>@Model.ItemId</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Oluşturma:</strong></td>
+                            <td>@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                        </tr>
+                        @if (Model.UpdatedDate.HasValue)
+                        {
+                            <tr>
+                                <td><strong>Güncelleme:</strong></td>
+                                <td>@Model.UpdatedDate.Value.ToString("dd.MM.yyyy HH:mm")</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td><strong>Durum:</strong></td>
+                            <td>
+                                @if (Model.IsActive && Model.IsAvailable)
+                                {
+                                    <span class="badge bg-success">Aktif ve Müsait</span>
+                                }
+                                else if (Model.IsActive && !Model.IsAvailable)
+                                {
+                                    <span class="badge bg-warning">Aktif ama Müsait Değil</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Pasif</span>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        $(document).ready(function() {
+            // Image preview
+            $('input[name="imageFile"]').on('change', function() {
+                var file = this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#imagePreview').attr('src', e.target.result).show();
+                        $('#noImagePlaceholder').hide();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#imagePreview').hide();
+                    $('#noImagePlaceholder').show();
+                }
+            });
+            
+            // Form validation
+            $('form').on('submit', function() {
+                var name = $('#Name').val().trim();
+                var price = parseFloat($('#Price').val());
+                var categoryId = $('#CategoryId').val();
+                
+                if (name.length < 2) {
+                    alert('Ürün adı en az 2 karakter olmalıdır.');
+                    return false;
+                }
+                
+                if (!categoryId) {
+                    alert('Lütfen bir kategori seçin.');
+                    return false;
+                }
+                
+                if (isNaN(price) || price <= 0) {
+                    alert('Geçerli bir fiyat giriniz.');
+                    return false;
+                }
+                
+                // File size check
+                var fileInput = $('input[name="imageFile"]')[0];
+                if (fileInput.files.length > 0) {
+                    var fileSize = fileInput.files[0].size / 1024 / 1024; // MB
+                    if (fileSize > 5) {
+                        alert('Resim boyutu 5MB\'dan küçük olmalıdır.');
+                        return false;
+                    }
+                }
+            });
+            
+            // Price formatting
+            $('#Price').on('blur', function() {
+                var value = parseFloat($(this).val());
+                if (!isNaN(value)) {
+                    $(this).val(value.toFixed(2));
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,179 @@
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResource> Localizer
+@model HarborRestaurant.Entities.Concrete.Contact
+
+@{
+    ViewData["Title"] = Localizer["Contact.Title"];
+}
+
+<!-- Hero Section -->
+<section class="hero-wrap hero-wrap-2" style="background-image: url('/images/bg_3.jpg');" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-end justify-content-center">
+            <div class="col-md-9 ftco-animate text-center mb-4">
+                <h1 class="mb-0 bread">@Localizer["Contact.Title"]</h1>
+                <p class="breadcrumbs">
+                    <span class="mr-2"><a href="@Url.Action("Index", "Home")">@Localizer["Nav.Home"] <i class="ion-ios-arrow-forward"></i></a></span>
+                    <span>@Localizer["Contact.Breadcrumb"] <i class="ion-ios-arrow-forward"></i></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="ftco-section contact-section">
+    <div class="container">
+        <div class="row d-flex mb-5 contact-info justify-content-center">
+            <div class="col-md-8">
+                <div class="row mb-5">
+                    <div class="col-md-4 text-center py-4">
+                        <div class="icon">
+                            <span class="icon-map-o"></span>
+                        </div>
+                        <div class="text">
+                            <h3>@Localizer["Contact.Address"]</h3>
+                            @if (Model?.Address != null)
+                            {
+                                @if (System.Globalization.CultureInfo.CurrentCulture.Name == "en" && !string.IsNullOrEmpty(Model.AddressEn))
+                                {
+                                    <p>@Model.AddressEn</p>
+                                }
+                                else
+                                {
+                                    <p>@Model.Address</p>
+                                }
+                            }
+                            else
+                            {
+                                <p>@Localizer["Contact.DefaultAddress"]</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center border-height py-4">
+                        <div class="icon">
+                            <span class="icon-mobile-phone"></span>
+                        </div>
+                        <div class="text">
+                            <h3>@Localizer["Contact.Phone"]</h3>
+                            <p><a href="tel:@(Model?.Phone)">@(Model?.Phone ?? Localizer["Contact.DefaultPhone"])</a></p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center py-4">
+                        <div class="icon">
+                            <span class="icon-envelope-o"></span>
+                        </div>
+                        <div class="text">
+                            <h3>@Localizer["Contact.Email"]</h3>
+                            <p><a href="mailto:@(Model?.Email)">@(Model?.Email ?? Localizer["Contact.DefaultEmail"])</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row block-9 justify-content-center mb-5">
+            <div class="col-md-8 mb-md-5">
+                <h2 class="text-center">@Localizer["Contact.GetInTouch"]</h2>
+                
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <form action="@Url.Action("SendMessage")" method="post" class="bg-light p-4 p-md-5 contact-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" name="FullName" class="form-control" placeholder="@Localizer["Contact.FullName"]" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="email" name="Email" class="form-control" placeholder="@Localizer["Contact.EmailAddress"]" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input type="text" name="Subject" class="form-control" placeholder="@Localizer["Contact.Subject"]" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <textarea name="Message" cols="30" rows="7" class="form-control" placeholder="@Localizer["Contact.Message"]" required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input type="submit" value="@Localizer["Contact.SendMessage"]" class="btn btn-primary py-3 px-5">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Harita bölümü -->
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="map">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3124.8419845614473!2d27.141901815431894!3d38.41885497965235!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14bbd862a46e5c51%3A0x5ba31a7b8c9b4a7a!2sKordon%2C%20%C4%B0zmir!5e0!3m2!1str!2str!4v1699999999999!5m2!1str!2str" 
+                        width="100%" 
+                        height="400" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Çalışma Saatleri -->
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8">
+                <div class="bg-primary p-4 text-center text-white">
+                    <h3>@Localizer["Contact.WorkingHours"]</h3>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            @if (Model?.WorkingHours != null)
+                            {
+                                @if (System.Globalization.CultureInfo.CurrentCulture.Name == "en" && !string.IsNullOrEmpty(Model.WorkingHoursEn))
+                                {
+                                    <p>@Model.WorkingHoursEn</p>
+                                }
+                                else
+                                {
+                                    <p>@Model.WorkingHours</p>
+                                }
+                            }
+                            else
+                            {
+                                <p>@Localizer["Contact.DefaultWorkingHours"]</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Alert otomatik kapanma
+setTimeout(function() {
+    $('.alert').fadeOut('slow');
+}, 5000);
+</script>

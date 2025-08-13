@@ -1,0 +1,124 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.MenuCategory>
+
+@{
+    ViewData["Title"] = "Menü Kategorileri";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Menü Kategorileri</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="/Admin">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Menü Kategorileri</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Menü Kategorileri Listesi</h3>
+                    <div class="card-tools">
+                        <a asp-action="Create" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Yeni Kategori
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="categoriesTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Resim</th>
+                                <th>Adı</th>
+                                <th>Açıklama</th>
+                                <th>Sıralama</th>
+                                <th>Durumu</th>
+                                <th>Oluşturma Tarihi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <img src="@item.ImageUrl" alt="@item.Name" style="width: 50px; height: 50px; object-fit: cover;" class="img-thumbnail">
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                <i class="fas fa-image text-muted"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>@item.Name</td>
+                                    <td>@(item.Description != null ? (item.Description.Length > 50 ? item.Description.Substring(0, 50) + "..." : item.Description) : "")</td>
+                                    <td>@item.SortOrder</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input toggle-active" id="active@(item.CategoryId)" 
+                                                   data-id="@item.CategoryId" @(item.IsActive ? "checked" : "")>
+                                            <label class="custom-control-label" for="active@(item.CategoryId)"></label>
+                                        </div>
+                                    </td>
+                                    <td>@item.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-id="@item.CategoryId" class="btn btn-info btn-sm" title="Detaylar">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-warning btn-sm" title="Düzenle">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-danger btn-sm" title="Sil">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#categoriesTable').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+                }
+            });
+
+            // Aktif/Pasif toggle
+            $('.toggle-active').change(function() {
+                var id = $(this).data('id');
+                $.post('/Admin/MenuCategories/ToggleActive', { id: id }, function(data) {
+                    if (data.success) {
+                        toastr.success('Durum başarıyla güncellendi.');
+                    } else {
+                        toastr.error('Bir hata oluştu.');
+                    }
+                });
+            });
+        });
+    </script>
+}

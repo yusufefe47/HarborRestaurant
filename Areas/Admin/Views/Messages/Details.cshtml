@@ -1,0 +1,122 @@
+@model HarborRestaurant.Entities.Concrete.ContactMessage
+
+@{
+    ViewData["Title"] = "Mesaj Detayı";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-envelope-open"></i> Mesaj Detayı</h2>
+    <div>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Geri
+        </a>
+        @if (!Model.IsReplied)
+        {
+            <a href="@Url.Action("Reply", new { id = Model.ContactMessageId })" class="btn btn-primary">
+                <i class="fas fa-reply"></i> Yanıtla
+            </a>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-envelope me-2"></i>@Model.Subject
+                    @if (!Model.IsRead)
+                    {
+                        <span class="badge bg-warning text-dark ms-2">Yeni</span>
+                    }
+                    @if (Model.IsReplied)
+                    {
+                        <span class="badge bg-success ms-2">Yanıtlandı</span>
+                    }
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="message-header mb-3 pb-3 border-bottom">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Gönderen:</strong> @Model.FullName<br>
+                            <strong>E-posta:</strong> <a href="mailto:@Model.Email">@Model.Email</a>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <strong>Gönderilme:</strong> @Model.SentDate.ToString("dd.MM.yyyy HH:mm")<br>
+                            @if (Model.ReadDate.HasValue)
+                            {
+                                <strong>Okunma:</strong> @Model.ReadDate.Value.ToString("dd.MM.yyyy HH:mm")
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="message-content">
+                    <h6>Mesaj İçeriği:</h6>
+                    <div class="bg-light p-3 rounded">
+                        @Html.Raw(Model.Message.Replace("\n", "<br>"))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="fas fa-cogs"></i> İşlemler</h6>
+            </div>
+            <div class="card-body">
+                @if (!Model.IsRead)
+                {
+                    <form method="post" asp-action="MarkAsRead" asp-route-id="@Model.ContactMessageId" class="mb-2">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-success btn-sm w-100">
+                            <i class="fas fa-check"></i> Okundu Olarak İşaretle
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <form method="post" asp-action="MarkAsUnread" asp-route-id="@Model.ContactMessageId" class="mb-2">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-warning btn-sm w-100">
+                            <i class="fas fa-eye-slash"></i> Okunmadı Olarak İşaretle
+                        </button>
+                    </form>
+                }
+                
+                <a href="@Url.Action("Reply", new { id = Model.ContactMessageId })" class="btn btn-primary btn-sm w-100 mb-2">
+                    <i class="fas fa-reply"></i> Yanıtla
+                </a>
+                
+                <form method="post" asp-action="Delete" asp-route-id="@Model.ContactMessageId" 
+                      onsubmit="return confirm('Bu mesajı silmek istediğinizden emin misiniz?')">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger btn-sm w-100">
+                        <i class="fas fa-trash"></i> Sil
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Mesaj Bilgileri -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6><i class="fas fa-info-circle"></i> Mesaj Bilgileri</h6>
+            </div>
+            <div class="card-body">
+                <small class="text-muted">
+                    <strong>ID:</strong> #@Model.ContactMessageId<br>
+                    <strong>IP Adresi:</strong> @(Model.IpAddress ?? "Bilinmiyor")<br>
+                    <strong>Oluşturulma:</strong> @Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                    @if (Model.ReplyDate.HasValue)
+                    {
+                        <br><strong>Yanıtlanma:</strong> @Model.ReplyDate.Value.ToString("dd.MM.yyyy HH:mm")
+                    }
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

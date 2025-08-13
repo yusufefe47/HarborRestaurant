@@ -1,0 +1,194 @@
+@model HarborRestaurant.Entities.Concrete.Room
+
+@{
+    ViewData["Title"] = "Salon Düzenle";
+    Layout = "_AdminLayout";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Salon Düzenle</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Admin/Dashboard">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item"><a href="/Admin/Rooms">Salon Yönetimi</a></li>
+                    <li class="breadcrumb-item active">Salon Düzenle</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-door-open"></i> Salon Bilgilerini Düzenle
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="RoomId" />
+                            <input type="hidden" asp-for="CreatedDate" />
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <label asp-for="Name" class="form-label">Salon Adı *</label>
+                                    <input asp-for="Name" class="form-control" required />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="Capacity" class="form-label">Kapasite *</label>
+                                    <input asp-for="Capacity" class="form-control" type="number" min="1" required />
+                                    <span asp-validation-for="Capacity" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label">Açıklama *</label>
+                                <textarea asp-for="Description" class="form-control" rows="4" required></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="MinimumOrderAmount" class="form-label">Minimum Sipariş Tutarı (₺)</label>
+                                    <input asp-for="MinimumOrderAmount" class="form-control" type="number" min="0" step="0.01" />
+                                    <span asp-validation-for="MinimumOrderAmount" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="SortOrder" class="form-label">Sıralama</label>
+                                    <input asp-for="SortOrder" class="form-control" type="number" />
+                                    <span asp-validation-for="SortOrder" class="text-danger"></span>
+                                    <small class="form-text text-muted">Küçük sayılar önce görünür</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="ImageUrl" class="form-label">Mevcut Resim URL</label>
+                                    <input asp-for="ImageUrl" class="form-control" />
+                                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="imageFile" class="form-label">Yeni Resim Yükle</label>
+                                    <input type="file" name="imageFile" class="form-control" accept="image/*" />
+                                    <small class="form-text text-muted">JPG, PNG formatları kabul edilir</small>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Features" class="form-label">Özellikler</label>
+                                <textarea asp-for="Features" class="form-control" rows="3" placeholder="Wi-Fi, Klima, Projeksiyon, Ses Sistemi vb."></textarea>
+                                <span asp-validation-for="Features" class="text-danger"></span>
+                                <small class="form-text text-muted">Her özelliği yeni satırda yazın</small>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="StarRating" class="form-label">Yıldız Değerlendirmesi</label>
+                                    <select asp-for="StarRating" class="form-control">
+                                        <option value="1">1 Yıldız</option>
+                                        <option value="2">2 Yıldız</option>
+                                        <option value="3">3 Yıldız</option>
+                                        <option value="4">4 Yıldız</option>
+                                        <option value="5">5 Yıldız</option>
+                                    </select>
+                                    <span asp-validation-for="StarRating" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check pt-4 mt-2">
+                                        <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                                        <label asp-for="IsActive" class="form-check-label">
+                                            Aktif
+                                        </label>
+                                        <small class="form-text text-muted d-block">Bu salon rezervasyon için açık olsun mu?</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a asp-action="Details" asp-route-id="@Model.RoomId" class="btn btn-secondary me-md-2">
+                                    <i class="fas fa-times me-1"></i>İptal
+                                </a>
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fas fa-save me-1"></i>Değişiklikleri Kaydet
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-info">Mevcut Resim</h6>
+                    </div>
+                    <div class="card-body text-center">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded mb-2" style="max-height: 200px;">
+                        }
+                        else
+                        {
+                            <div class="bg-light p-4 rounded">
+                                <i class="fas fa-image fa-3x text-muted mb-2"></i>
+                                <p class="text-muted">Resim yüklenmemiş</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+                
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-info">Salon Özeti</h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>ID:</strong></td>
+                                <td>@Model.RoomId</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Oluşturma:</strong></td>
+                                <td>@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            </tr>
+                            @if (Model.UpdatedDate.HasValue)
+                            {
+                                <tr>
+                                    <td><strong>Güncelleme:</strong></td>
+                                    <td>@Model.UpdatedDate.Value.ToString("dd.MM.yyyy HH:mm")</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td><strong>Durum:</strong></td>
+                                <td>
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktif</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Pasif</span>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,358 @@
+@model HarborRestaurant.Entities.Concrete.BlogPost
+@{
+    ViewData["Title"] = Model.Title;
+    ViewData["Description"] = Model.MetaDescription ?? Model.Summary;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Hero Section -->
+<section class="hero-section" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('@(Model.ImageUrl ?? "/images/blog-detail-hero.jpg")'); background-size: cover; background-position: center;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center text-white">
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb justify-content-center bg-transparent">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")" class="text-white">Anasayfa</a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Blog")" class="text-white">Blog</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">@Model.Title</li>
+                    </ol>
+                </nav>
+                <h1 class="display-5 mb-4">@Model.Title</h1>
+                <div class="blog-meta">
+                    <span class="me-3"><i class="far fa-calendar-alt"></i> @Model.PublishedDate?.ToString("dd MMMM yyyy")</span>
+                    <span class="me-3"><i class="far fa-user"></i> @Model.Author</span>
+                    <span class="me-3"><i class="far fa-eye"></i> @Model.ViewCount görüntüleme</span>
+                    @if (Model.IsFeatured)
+                    {
+                        <span class="badge badge-primary">Öne Çıkan</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Content -->
+<section class="blog-content py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <article class="blog-article">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <div class="article-image mb-4">
+                            <img src="@Model.ImageUrl" class="img-fluid rounded" alt="@Model.Title">
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Summary))
+                    {
+                        <div class="article-summary mb-4">
+                            <div class="alert alert-info">
+                                <strong>Özet:</strong> @Model.Summary
+                            </div>
+                        </div>
+                    }
+
+                    <div class="article-content">
+                        @Html.Raw(Model.Content)
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="article-tags mt-5 pt-4 border-top">
+                        <h6>Etiketler:</h6>
+                        <span class="badge badge-secondary me-2">Restoran</span>
+                        <span class="badge badge-secondary me-2">Yemek</span>
+                        <span class="badge badge-secondary me-2">Lezzet</span>
+                    </div>
+
+                    <!-- Share Buttons -->
+                    <div class="article-share mt-4">
+                        <h6>Paylaş:</h6>
+                        <div class="share-buttons">
+                            <a href="#" class="btn btn-outline-primary btn-sm me-2" onclick="shareOnFacebook()">
+                                <i class="fab fa-facebook-f"></i> Facebook
+                            </a>
+                            <a href="#" class="btn btn-outline-info btn-sm me-2" onclick="shareOnTwitter()">
+                                <i class="fab fa-twitter"></i> Twitter
+                            </a>
+                            <a href="#" class="btn btn-outline-success btn-sm me-2" onclick="shareOnWhatsApp()">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm" onclick="copyLink()">
+                                <i class="fas fa-link"></i> Linki Kopyala
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Navigation -->
+                <nav class="article-navigation mt-5 pt-4 border-top">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="#" class="d-block text-decoration-none">
+                                <small class="text-muted">← Önceki Yazı</small>
+                                <h6 class="mb-0">Önceki blog yazısının başlığı</h6>
+                            </a>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <a href="#" class="d-block text-decoration-none">
+                                <small class="text-muted">Sonraki Yazı →</small>
+                                <h6 class="mb-0">Sonraki blog yazısının başlığı</h6>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Comments Section -->
+                <section class="comments-section mt-5 pt-4 border-top">
+                    <h4 class="mb-4">Yorumlar (0)</h4>
+                    
+                    <!-- Comment Form -->
+                    <div class="comment-form mb-5">
+                        <h5>Yorum Yap</h5>
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <input type="text" class="form-control" placeholder="Adınız *" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <input type="email" class="form-control" placeholder="E-posta *" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" rows="4" placeholder="Yorumunuz *" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Yorum Gönder
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Comments List -->
+                    <div class="comments-list">
+                        <div class="text-center text-muted">
+                            <i class="far fa-comments fa-3x mb-3"></i>
+                            <p>Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="blog-sidebar">
+                    <!-- About Author -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-user"></i> Yazar Hakkında</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <img src="/images/author-avatar.jpg" class="rounded-circle mb-3" width="80" height="80" alt="@Model.Author">
+                            <h6>@Model.Author</h6>
+                            <p class="text-muted small">Harborlights'ın deneyimli şeflerinden biri. Yemek sanatı ve lezzet konularında uzman.</p>
+                            <div class="social-links">
+                                <a href="#" class="text-muted me-2"><i class="fab fa-facebook"></i></a>
+                                <a href="#" class="text-muted me-2"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="text-muted me-2"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="text-muted"><i class="fab fa-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Posts -->
+                    @if (ViewBag.RecentPosts != null)
+                    {
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-clock"></i> İlgili Yazılar</h5>
+                            </div>
+                            <div class="card-body">
+                                @foreach (var post in ViewBag.RecentPosts)
+                                {
+                                    <div class="d-flex mb-3">
+                                        @if (!string.IsNullOrEmpty(post.ImageUrl))
+                                        {
+                                            <img src="@post.ImageUrl" class="me-3 rounded" width="60" height="60" style="object-fit: cover;" alt="@post.Title">
+                                        }
+                                        else
+                                        {
+                                            <div class="me-3 bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                <i class="fas fa-image text-muted"></i>
+                                            </div>
+                                        }
+                                        
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">
+                                                <a href="@Url.Action("Detail", "Blog", new { id = post.PostId })" class="text-decoration-none">
+                                                    @(post.Title.Length > 50 ? post.Title.Substring(0, 50) + "..." : post.Title)
+                                                </a>
+                                            </h6>
+                                            <small class="text-muted">
+                                                <i class="far fa-calendar-alt"></i> @post.PublishedDate?.ToString("dd MMM yyyy")
+                                            </small>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Newsletter -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-envelope"></i> Bülten</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">En yeni blog yazılarımızdan haberdar olmak için bültenimize abone olun.</p>
+                            <form>
+                                <div class="mb-3">
+                                    <input type="email" class="form-control" placeholder="E-posta adresiniz">
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-paper-plane"></i> Abone Ol
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        .hero-section {
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+        }
+
+        .blog-meta span {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .blog-article {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .article-content h1,
+        .article-content h2,
+        .article-content h3,
+        .article-content h4,
+        .article-content h5,
+        .article-content h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content blockquote {
+            border-left: 4px solid #007bff;
+            padding-left: 1rem;
+            margin: 2rem 0;
+            font-style: italic;
+            background: #f8f9fa;
+            padding: 1rem;
+        }
+
+        .share-buttons .btn {
+            transition: transform 0.2s ease;
+        }
+
+        .share-buttons .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .article-navigation a {
+            transition: all 0.3s ease;
+        }
+
+        .article-navigation a:hover {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .comment-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 0.5rem;
+        }
+
+        .blog-sidebar .card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .social-links a {
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #007bff !important;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function shareOnFacebook() {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent('@Model.Title');
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareOnTwitter() {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent('@Model.Title');
+            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${title}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareOnWhatsApp() {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent('@Model.Title');
+            window.open(`https://wa.me/?text=${title} ${url}`, '_blank');
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(function() {
+                alert('Link kopyalandı!');
+            });
+        }
+
+        $(document).ready(function() {
+            // Comment form submission
+            $('.comment-form form').on('submit', function(e) {
+                e.preventDefault();
+                alert('Yorum özelliği yakında aktif olacak!');
+            });
+
+            // Newsletter subscription
+            $('.blog-sidebar form').on('submit', function(e) {
+                e.preventDefault();
+                var email = $(this).find('input[type="email"]').val();
+                if (email) {
+                    alert('Bülten aboneliği özelliği yakında aktif olacak!');
+                }
+            });
+
+            // Smooth scroll for internal links
+            $('a[href^="#"]').on('click', function(e) {
+                e.preventDefault();
+                const target = $(this.getAttribute('href'));
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top - 100
+                    }, 800);
+                }
+            });
+        });
+    </script>
+}

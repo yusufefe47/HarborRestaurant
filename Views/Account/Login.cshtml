@@ -1,0 +1,90 @@
+@model HarborRestaurant.Models.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Giriş Yap";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Hero Section -->
+<div class="hero-wrap" style="background-image: url('/images/bg_1.jpg');">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text d-flex align-itemd-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center d-flex align-items-end justify-content-center">
+                <div class="text">
+                    <p class="breadcrumbs mb-2"><span class="mr-2"><a href="@Url.Action("Index", "Home")">Anasayfa</a></span> <span>Giriş Yap</span></p>
+                    <h1 class="mb-4 bread">Üye Giriş</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Login Section -->
+<section class="ftco-section contact-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="wrapper">
+                    <div class="row no-gutters">
+                        <div class="col-lg-12">
+                            <div class="contact-wrap w-100 p-md-5 p-4">
+                                <h3 class="mb-4 text-center">Giriş Yap</h3>
+                                
+                                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                                {
+                                    <div class="alert alert-danger">
+                                        @ViewBag.ErrorMessage
+                                    </div>
+                                }
+
+                                <form asp-action="Login" asp-controller="Account" method="post" id="loginForm" name="loginForm" class="loginForm">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="label" for="email">Email Adresiniz</label>
+                                                <input asp-for="Email" type="email" class="form-control" name="email" id="email" placeholder="Email">
+                                                <span asp-validation-for="Email" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="label" for="password">Şifreniz</label>
+                                                <input asp-for="Password" type="password" class="form-control" name="password" id="password" placeholder="Şifre">
+                                                <span asp-validation-for="Password" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="form-check">
+                                                    <input asp-for="RememberMe" type="checkbox" class="form-check-input" id="rememberMe">
+                                                    <label class="form-check-label" for="rememberMe">
+                                                        Beni Hatırla
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group text-center">
+                                                <input type="submit" value="Giriş Yap" class="btn btn-primary">
+                                                <div class="submitting"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                
+                                <div class="text-center mt-3">
+                                    <p>Hesabınız yok mu? <a href="@Url.Action("Register", "Account")" class="text-primary">Kayıt Olun</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

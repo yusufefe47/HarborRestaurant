@@ -1,0 +1,218 @@
+@model HarborRestaurant.Entities.Concrete.Reservation
+@{
+    ViewData["Title"] = "Rezervasyon Düzenle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-edit me-2"></i>Rezervasyon Düzenle - #@Model.ReservationId
+    </h1>
+    <div>
+        <a asp-action="Details" asp-route-id="@Model.ReservationId" class="btn btn-info">
+            <i class="fas fa-eye me-1"></i>Detaylar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Geri Dön
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Rezervasyon Bilgileri</h6>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="ReservationId" />
+                    <input type="hidden" asp-for="CreatedDate" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="FullName" class="form-label">Ad Soyad *</label>
+                            <input asp-for="FullName" class="form-control" required />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label">E-posta *</label>
+                            <input asp-for="Email" class="form-control" type="email" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label">Telefon *</label>
+                            <input asp-for="Phone" class="form-control" required />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="GuestCount" class="form-label">Kişi Sayısı *</label>
+                            <input asp-for="GuestCount" class="form-control" type="number" min="1" max="20" required />
+                            <span asp-validation-for="GuestCount" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="CheckInDate" class="form-label">Giriş Tarihi *</label>
+                            <input asp-for="CheckInDate" class="form-control" type="date" required />
+                            <span asp-validation-for="CheckInDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ReservationTime" class="form-label">Rezervasyon Saati *</label>
+                            <input asp-for="ReservationTime" class="form-control" type="time" required />
+                            <span asp-validation-for="ReservationTime" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label">Durum *</label>
+                            <select asp-for="Status" class="form-select">
+                                @foreach (var status in (ViewBag.ReservationStatuses as HarborRestaurant.Entities.Enums.ReservationStatus[]) ?? Array.Empty<HarborRestaurant.Entities.Enums.ReservationStatus>())
+                                {
+                                    <option value="@status" selected="@(status == Model.Status)">@(status switch
+                                    {
+                                        HarborRestaurant.Entities.Enums.ReservationStatus.Pending => "Bekliyor",
+                                        HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed => "Onaylandı",
+                                        HarborRestaurant.Entities.Enums.ReservationStatus.Completed => "Tamamlandı",
+                                        HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled => "İptal Edildi",
+                                        _ => "Bilinmiyor"
+                                    })</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="TableId" class="form-label">Masa</label>
+                            <select asp-for="TableId" class="form-select">
+                                <option value="">Masa seçiniz (opsiyonel)</option>
+                                @if (ViewBag.Tables != null)
+                                {
+                                    @foreach (dynamic table in (ViewBag.Tables as IEnumerable<object>) ?? Enumerable.Empty<object>())
+                                    {
+                                        <option value="@table" selected="@(table.Equals(Model.TableId))">Masa @table</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="TableId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="SpecialRequests" class="form-label">Özel İstekler</label>
+                        <textarea asp-for="SpecialRequests" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="SpecialRequests" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AdminNotes" class="form-label">Yönetici Notları</label>
+                        <textarea asp-for="AdminNotes" class="form-control" rows="2" placeholder="İç notlar (müşteri görmez)"></textarea>
+                        <span asp-validation-for="AdminNotes" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Details" asp-route-id="@Model.ReservationId" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times me-1"></i>İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Değişiklikleri Kaydet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-info">Rezervasyon Özeti</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <td><strong>ID:</strong></td>
+                        <td>#@Model.ReservationId</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Oluşturma:</strong></td>
+                        <td>@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                    </tr>
+                    @if (Model.UpdatedDate.HasValue)
+                    {
+                        <tr>
+                            <td><strong>Güncelleme:</strong></td>
+                            <td>@Model.UpdatedDate?.ToString("dd.MM.yyyy HH:mm")</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td><strong>Durum:</strong></td>
+                        <td>
+                            <span class="badge @(Model.Status switch
+                            {
+                                HarborRestaurant.Entities.Enums.ReservationStatus.Pending => "bg-warning",
+                                HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed => "bg-success",
+                                HarborRestaurant.Entities.Enums.ReservationStatus.Completed => "bg-info",
+                                HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled => "bg-danger",
+                                _ => "bg-secondary"
+                            })">
+                                @(Model.Status switch
+                                {
+                                    HarborRestaurant.Entities.Enums.ReservationStatus.Pending => "Bekliyor",
+                                    HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed => "Onaylandı",
+                                    HarborRestaurant.Entities.Enums.ReservationStatus.Completed => "Tamamlandı",
+                                    HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled => "İptal Edildi",
+                                    _ => "Bilinmiyor"
+                                })
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-warning">Hızlı İşlemler</h6>
+            </div>
+            <div class="card-body">
+                @if (Model.Status == HarborRestaurant.Entities.Enums.ReservationStatus.Pending)
+                {
+                    <form asp-action="UpdateStatus" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@Model.ReservationId" />
+                        <input type="hidden" name="status" value="@HarborRestaurant.Entities.Enums.ReservationStatus.Confirmed" />
+                        <button type="submit" class="btn btn-success btn-sm mb-2 w-100">
+                            <i class="fas fa-check me-1"></i>Onayla
+                        </button>
+                    </form>
+                }
+                
+                @if (Model.Status != HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled)
+                {
+                    <form asp-action="UpdateStatus" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@Model.ReservationId" />
+                        <input type="hidden" name="status" value="@HarborRestaurant.Entities.Enums.ReservationStatus.Cancelled" />
+                        <button type="submit" class="btn btn-danger btn-sm mb-2 w-100" onclick="return confirm('Bu rezervasyonu iptal etmek istediğinizden emin misiniz?')">
+                            <i class="fas fa-times me-1"></i>İptal Et
+                        </button>
+                    </form>
+                }
+                
+                <form asp-action="Delete" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@Model.ReservationId" />
+                    <button type="submit" class="btn btn-outline-danger btn-sm w-100" onclick="return confirm('Bu rezervasyonu kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!')">
+                        <i class="fas fa-trash me-1"></i>Sil
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

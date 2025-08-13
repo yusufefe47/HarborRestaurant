@@ -1,0 +1,214 @@
+@model HarborRestaurant.Entities.Concrete.Room
+
+@{
+    ViewData["Title"] = "Salon Detayları";
+    Layout = "_AdminLayout";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Salon Detayları</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Admin/Dashboard">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item"><a href="/Admin/Rooms">Salon Yönetimi</a></li>
+                    <li class="breadcrumb-item active">Salon Detayları</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-door-open"></i> @Model.Name - Detaylar
+                        </h3>
+                        <div class="card-tools">
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Pasif</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-tag text-primary"></i> Salon Adı</h5>
+                                <p class="text-lg">@Model.Name</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-users text-primary"></i> Kapasite</h5>
+                                <p class="text-lg">@Model.Capacity kişi</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5><i class="fas fa-info-circle text-primary"></i> Açıklama</h5>
+                            <div class="bg-light p-3 rounded">
+                                @Html.Raw(Html.Encode(@Model.Description).Replace("\n", "<br>"))
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.Features))
+                        {
+                            <div class="mb-4">
+                                <h5><i class="fas fa-list text-primary"></i> Özellikler</h5>
+                                <div class="bg-light p-3 rounded">
+                                    @Html.Raw(Html.Encode(@Model.Features).Replace("\n", "<br>"))
+                                </div>
+                            </div>
+                        }
+
+                        <div class="row mb-4">
+                            @if (Model.MinimumOrderAmount.HasValue && Model.MinimumOrderAmount.Value > 0)
+                            {
+                                <div class="col-md-6">
+                                    <h5><i class="fas fa-money-bill-wave text-primary"></i> Minimum Sipariş</h5>
+                                    <p class="text-lg">@Model.MinimumOrderAmount.Value.ToString("C")</p>
+                                </div>
+                            }
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-star text-warning"></i> Değerlendirme</h5>
+                                <p class="text-lg">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= Model.StarRating)
+                                        {
+                                            <i class="fas fa-star text-warning"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="far fa-star text-muted"></i>
+                                        }
+                                    }
+                                    (@Model.StarRating/5)
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a asp-action="Edit" asp-route-id="@Model.RoomId" class="btn btn-warning">
+                                <i class="fas fa-edit me-1"></i>Düzenle
+                            </a>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Geri Dön
+                            </a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="fas fa-trash me-1"></i>Sil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-info">Salon Görseli</h6>
+                    </div>
+                    <div class="card-body text-center">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow">
+                        }
+                        else
+                        {
+                            <div class="bg-light p-5 rounded">
+                                <i class="fas fa-image fa-4x text-muted mb-3"></i>
+                                <p class="text-muted">Resim yüklenmemiş</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+                
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-info">Sistem Bilgileri</h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm table-borderless">
+                            <tr>
+                                <td><strong>ID:</strong></td>
+                                <td>#@Model.RoomId</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sıralama:</strong></td>
+                                <td>@Model.SortOrder</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Oluşturulma:</strong></td>
+                                <td>@Model.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            </tr>
+                            @if (Model.UpdatedDate.HasValue)
+                            {
+                                <tr>
+                                    <td><strong>Son Güncelleme:</strong></td>
+                                    <td>@Model.UpdatedDate.Value.ToString("dd.MM.yyyy HH:mm")</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td><strong>Durum:</strong></td>
+                                <td>
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Aktif
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times me-1"></i>Pasif
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Silme Modalı -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="fas fa-exclamation-triangle text-danger"></i> Salon Silme Onayı
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bu salonu silmek istediğinizden emin misiniz?</p>
+                <div class="alert alert-warning">
+                    <strong>@Model.Name</strong> salonu kalıcı olarak silinecektir. Bu işlem geri alınamaz.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>İptal
+                </button>
+                <form asp-action="Delete" asp-route-id="@Model.RoomId" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>Evet, Sil
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

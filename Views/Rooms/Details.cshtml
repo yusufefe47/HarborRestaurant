@@ -1,0 +1,89 @@
+@model HarborRestaurant.Entities.Concrete.Room
+@{
+    ViewData["Title"] = "Salon Detayı";
+    var roomName = Model?.Name ?? "Salon";
+}
+
+<!-- Hero Section -->
+<section class="hero-wrap hero-wrap-2" style="background-image: url('/images/bg_2.jpg');" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-end justify-content-center">
+            <div class="col-md-9 ftco-animate text-center mb-4">
+                <h1 class="mb-0 bread">@roomName</h1>
+                <p class="breadcrumbs">
+                    <span class="mr-2"><a href="@Url.Action("Index", "Home")">Anasayfa <i class="ion-ios-arrow-forward"></i></a></span>
+                    <span class="mr-2"><a href="@Url.Action("Index", "Rooms")">Salonlarımız <i class="ion-ios-arrow-forward"></i></a></span>
+                    <span>@roomName <i class="ion-ios-arrow-forward"></i></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Room Details Section -->
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-md-12 ftco-animate">
+                        <div class="single-slider owl-carousel">
+                            <div class="item">
+                                <div class="room-img" style="background-image: url('@(Model?.ImageUrl ?? "/images/room-1.jpg")');"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 ftco-animate">
+                        <div class="room-content">
+                            <h2 class="mb-4">@roomName</h2>
+                            <p>@(Model?.Description ?? "Bu salon için açıklama bulunamadı.")</p>
+                            @if (!string.IsNullOrWhiteSpace(Model?.Features))
+                            {
+                                <p><strong>Özellikler:</strong></p>
+                                <ul>
+                                    @foreach (var feat in Model.Features.Split(',', ';'))
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(feat))
+                                        {
+                                            <li>@feat.Trim()</li>
+                                        }
+                                    }
+                                </ul>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 sidebar ftco-animate">
+                <div class="sidebar-box">
+                    <form action="@Url.Action("Index", "Reservation")" class="search-form">
+                        <div class="form-group">
+                            <span class="icon ion-ios-search"></span>
+                            <input type="text" class="form-control" placeholder="Rezervasyon için salon seçin">
+                        </div>
+                    </form>
+                </div>
+                <div class="sidebar-box ftco-animate">
+                    <div class="categories">
+                        <h3>Salon Özellikleri</h3>
+                        <li><a href="#">Klima <span class="ion-ios-arrow-forward"></span></a></li>
+                        <li><a href="#">Ses Sistemi <span class="ion-ios-arrow-forward"></span></a></li>
+                        <li><a href="#">Projeksiyon <span class="ion-ios-arrow-forward"></span></a></li>
+                        <li><a href="#">Wi-Fi <span class="ion-ios-arrow-forward"></span></a></li>
+                        <li><a href="#">Özel Servis <span class="ion-ios-arrow-forward"></span></a></li>
+                    </div>
+                </div>
+                <div class="sidebar-box ftco-animate">
+                    <h3>Rezervasyon Yap</h3>
+                    <p>@(Model?.Name) için hemen rezervasyon yapabilirsiniz.</p>
+                    <p>
+                        <a href="@Url.Action("Index", "Reservation", new { RoomId = Model?.RoomId })" class="btn btn-primary py-2 px-4">
+                            Bu Salon İçin Rezervasyon Yap
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

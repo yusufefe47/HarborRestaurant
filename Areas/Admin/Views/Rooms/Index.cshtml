@@ -1,0 +1,143 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.Room>
+@{
+    ViewData["Title"] = "Salon Yönetimi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        <i class="fas fa-home me-2"></i>Salon Yönetimi
+    </h1>
+    <div>
+        <a href="@Url.Action("Create")" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Yeni Salon
+        </a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Salonlar Listesi -->
+<div class="row">
+    @foreach (var room in Model)
+    {
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                @if (!string.IsNullOrEmpty(room.ImageUrl))
+                {
+                    <img src="@room.ImageUrl" class="card-img-top" style="height: 200px; object-fit: cover;" alt="@room.Name">
+                }
+                else
+                {
+                    <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 200px; background-color: #f8f9fa;">
+                        <i class="fas fa-home fa-4x text-muted"></i>
+                    </div>
+                }
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title">@room.Name</h5>
+                        <div class="text-warning">
+                            @for (int i = 0; i < room.StarRating; i++)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                        </div>
+                    </div>
+                    
+                    <p class="card-text flex-grow-1">
+                        @(room.Description.Length > 100 ? room.Description.Substring(0, 100) + "..." : room.Description)
+                    </p>
+                    
+                    <div class="mb-3">
+                        <small class="text-muted d-block"><i class="fas fa-users me-1"></i>Kapasite: @room.Capacity kişi</small>
+                        <small class="text-muted d-block"><i class="fas fa-lira-sign me-1"></i>Min. Sipariş: ₺@room.MinimumOrderAmount</small>
+                        <small class="text-muted d-block">
+                            <i class="fas fa-circle me-1 @(room.IsActive ? "text-success" : "text-danger")"></i>
+                            @(room.IsActive ? "Aktif" : "Pasif")
+                        </small>
+                    </div>
+                    
+                    <div class="btn-group w-100">
+                        <a href="@Url.Action("Details", new { id = room.RoomId })" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-eye"></i> Detay
+                        </a>
+                        <a href="@Url.Action("Edit", new { id = room.RoomId })" class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-edit"></i> Düzenle
+                        </a>
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" 
+                                data-room-id="@room.RoomId" data-room-name="@room.Name">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center py-5">
+        <i class="fas fa-home fa-4x text-muted mb-3"></i>
+        <h4 class="text-muted">Henüz salon eklenmemiş</h4>
+        <p class="text-muted">İlk salonunuzu eklemek için yukarıdaki "Yeni Salon" butonunu kullanın.</p>
+        <a href="@Url.Action("Create")" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Salon Ekle
+        </a>
+    </div>
+}
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Salon Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bu salonu silmek istediğinizden emin misiniz?</p>
+                <p class="text-danger"><strong id="roomName"></strong> salonu kalıcı olarak silinecektir.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <form method="post" style="display: inline;">
+                    <input type="hidden" name="id" id="roomId" />
+                    <button type="submit" class="btn btn-danger" formaction="@Url.Action("Delete")">
+                        <i class="fas fa-trash me-1"></i>Sil
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var roomId = button.getAttribute('data-room-id');
+            var roomName = button.getAttribute('data-room-name');
+            
+            var modalRoomId = deleteModal.querySelector('#roomId');
+            var modalRoomName = deleteModal.querySelector('#roomName');
+            
+            modalRoomId.value = roomId;
+            modalRoomName.textContent = roomName;
+        });
+    </script>
+}

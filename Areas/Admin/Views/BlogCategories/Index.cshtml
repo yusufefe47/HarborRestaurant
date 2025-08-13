@@ -1,0 +1,211 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.BlogCategory>
+
+@{
+    ViewData["Title"] = "Blog Kategorileri";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Blog Kategorileri</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard")">Ana Sayfa</a></li>
+                        <li class="breadcrumb-item active">Blog Kategorileri</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-tags"></i> Blog Kategorileri
+                            </h3>
+                            <div class="card-tools">
+                                <a asp-action="Create" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus"></i> Yeni Kategori
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            @if (Model.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped" id="categoriesTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Sıra</th>
+                                                <th>Kategori Adı</th>
+                                                <th>Açıklama</th>
+                                                <th>Blog Sayısı</th>
+                                                <th>Durum</th>
+                                                <th>Oluşturma Tarihi</th>
+                                                <th>İşlemler</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var category in Model)
+                                            {
+                                                <tr>
+                                                    <td>@category.SortOrder</td>
+                                                    <td>
+                                                        <strong>@category.Name</strong>
+                                                    </td>
+                                                    <td>
+                                                        @if (!string.IsNullOrEmpty(category.Description))
+                                                        {
+                                                            @(category.Description.Length > 50 ? category.Description.Substring(0, 50) + "..." : category.Description)
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-muted">Açıklama yok</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-info">
+                                                            @(category.BlogPosts?.Count ?? 0)
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        @if (category.IsActive)
+                                                        {
+                                                            <span class="badge badge-success">Aktif</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge badge-danger">Pasif</span>
+                                                        }
+                                                    </td>
+                                                    <td>@category.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <a asp-action="Details" asp-route-id="@category.CategoryId" 
+                                                               class="btn btn-info btn-sm" title="Detaylar">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                            <a asp-action="Edit" asp-route-id="@category.CategoryId" 
+                                                               class="btn btn-warning btn-sm" title="Düzenle">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <button type="button" class="btn btn-secondary btn-sm" 
+                                                                    onclick="toggleActive(@category.CategoryId, '@category.Name')" 
+                                                                    title="@(category.IsActive ? "Pasif Yap" : "Aktif Yap")">
+                                                                <i class="fas fa-@(category.IsActive ? "times" : "check")"></i>
+                                                            </button>
+                                                            @if (category.BlogPosts?.Count == 0)
+                                                            {
+                                                                <button type="button" class="btn btn-danger btn-sm" 
+                                                                        onclick="deleteCategory(@category.CategoryId, '@category.Name')" 
+                                                                        title="Sil">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            }
+                                                            else
+                                                            {
+                                                                <button type="button" class="btn btn-danger btn-sm disabled" 
+                                                                        title="Bu kategoriye ait blog yazıları var, silinemez">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center py-5">
+                                    <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                                    <h4 class="text-muted">Henüz kategori bulunmuyor</h4>
+                                    <p class="text-muted">İlk kategoriyi oluşturmak için aşağıdaki butona tıklayın.</p>
+                                    <a asp-action="Create" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> İlk Kategoriyi Oluştur
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Delete Form -->
+<form id="deleteForm" method="post" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<!-- Toggle Active Form -->
+<form id="toggleActiveForm" method="post" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#categoriesTable').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "pageLength": 10,
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Turkish.json"
+                },
+                "order": [[0, "asc"]]
+            });
+        });
+
+        function deleteCategory(id, name) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: `"${name}" kategorisini silmek istediğinizden emin misiniz?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Evet, Sil!',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('deleteForm');
+                    form.action = '@Url.Action("Delete")/' + id;
+                    form.submit();
+                }
+            });
+        }
+
+        function toggleActive(id, name) {
+            Swal.fire({
+                title: 'Durumu Değiştir',
+                text: `"${name}" kategorisinin durumunu değiştirmek istediğinizden emin misiniz?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Evet, Değiştir!',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('toggleActiveForm');
+                    form.action = '@Url.Action("ToggleActive")/' + id;
+                    form.submit();
+                }
+            });
+        }
+    </script>
+}

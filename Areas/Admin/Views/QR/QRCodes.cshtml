@@ -1,0 +1,154 @@
+@{
+    ViewData["Title"] = "QR Kod Yöneticisi";
+    Layout = "_AdminLayout";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>QR Kod Yöneticisi</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="/Admin/Dashboard">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active">QR Kodlar</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-utensils"></i> Menü QR Kodu
+                        </h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="text-muted">Müşterilerinizin menüye kolay erişimi için QR kod</p>
+                        <div class="mb-3">
+                            <img id="menuQR" src="/Admin/QR/GenerateMenuQR" alt="Menü QR Kodu" class="img-fluid" style="max-width: 200px;">
+                        </div>
+                        <p class="small text-muted">
+                            <strong>URL:</strong> @ViewBag.BaseUrl/Menu
+                        </p>
+                        <div class="btn-group">
+                            <a href="/Admin/QR/GenerateMenuQR" download="menu-qr-code.png" class="btn btn-success">
+                                <i class="fas fa-download"></i> İndir
+                            </a>
+                            <button type="button" class="btn btn-outline-success" onclick="printQR('menuQR', 'Menü QR Kodu')">
+                                <i class="fas fa-print"></i> Yazdır
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-calendar-check"></i> Rezervasyon QR Kodu
+                        </h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="text-muted">Müşterilerinizin rezervasyon yapması için QR kod</p>
+                        <div class="mb-3">
+                            <img id="reservationQR" src="/Admin/QR/GenerateReservationQR" alt="Rezervasyon QR Kodu" class="img-fluid" style="max-width: 200px;">
+                        </div>
+                        <p class="small text-muted">
+                            <strong>URL:</strong> @ViewBag.BaseUrl/Reservation
+                        </p>
+                        <div class="btn-group">
+                            <a href="/Admin/QR/GenerateReservationQR" download="reservation-qr-code.png" class="btn btn-primary">
+                                <i class="fas fa-download"></i> İndir
+                            </a>
+                            <button type="button" class="btn btn-outline-primary" onclick="printQR('reservationQR', 'Rezervasyon QR Kodu')">
+                                <i class="fas fa-print"></i> Yazdır
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-info-circle"></i> QR Kod Kullanım Talimatları
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-utensils text-success"></i> Menü QR Kodu</h5>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> Masalara yerleştirilebilir</li>
+                                    <li><i class="fas fa-check text-success"></i> Müşteriler menüyü telefonlarında görür</li>
+                                    <li><i class="fas fa-check text-success"></i> Kağıt menü maliyetini azaltır</li>
+                                    <li><i class="fas fa-check text-success"></i> Hijyenik ve çevre dostu</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-calendar-check text-primary"></i> Rezervasyon QR Kodu</h5>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> Restoranınızın her yerinde kullanılabilir</li>
+                                    <li><i class="fas fa-check text-success"></i> Müşteriler kolay rezervasyon yapabilir</li>
+                                    <li><i class="fas fa-check text-success"></i> Sosyal medyada paylaşılabilir</li>
+                                    <li><i class="fas fa-check text-success"></i> Marketing malzemelerinde kullanılabilir</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning mt-3">
+                            <h6><i class="fas fa-lightbulb"></i> İpuçları:</h6>
+                            <ul class="mb-0">
+                                <li>QR kodları her zaman düzenli olarak test edin</li>
+                                <li>QR kodun yanına kısa bir açıklama yazın ("Menü için QR kodu tarayın")</li>
+                                <li>QR kodları temiz ve düzgün bir şekilde yazdırın</li>
+                                <li>Mobil cihazlar için optimize edilmiş sayfalarınızı kontrol edin</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function printQR(imageId, title) {
+            var printWindow = window.open('', '_blank');
+            var imgElement = document.getElementById(imageId);
+            
+            printWindow.document.write('<html><head><title>' + title + '</title>');
+            printWindow.document.write('<style>');
+            printWindow.document.write('body { text-align: center; margin: 50px; font-family: Arial, sans-serif; }');
+            printWindow.document.write('img { max-width: 300px; margin: 20px 0; }');
+            printWindow.document.write('h2 { color: #333; margin-bottom: 30px; }');
+            printWindow.document.write('p { font-size: 14px; color: #666; margin-top: 20px; }');
+            printWindow.document.write('</style></head><body>');
+            printWindow.document.write('<h2>Harborlights - ' + title + '</h2>');
+            printWindow.document.write('<img src="' + imgElement.src + '" alt="' + title + '">');
+            printWindow.document.write('<p>QR kodu tarayarak sayfamıza ulaşabilirsiniz.</p>');
+            printWindow.document.write('</body></html>');
+            
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // QR kodları yenile
+        function refreshQRCodes() {
+            document.getElementById('menuQR').src = '/Admin/QR/GenerateMenuQR?t=' + new Date().getTime();
+            document.getElementById('reservationQR').src = '/Admin/QR/GenerateReservationQR?t=' + new Date().getTime();
+        }
+    </script>
+}

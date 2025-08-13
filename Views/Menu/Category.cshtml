@@ -1,0 +1,72 @@
+@model IEnumerable<HarborRestaurant.Entities.Concrete.MenuItem>
+@{
+    var category = ViewBag.Category as HarborRestaurant.Entities.Concrete.MenuCategory;
+    ViewData["Title"] = category?.Name ?? "Kategori";
+}
+
+<section class="hero-wrap hero-wrap-2" style="background-image: url('/images/bg_2.jpg');" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-end justify-content-center">
+            <div class="col-md-9 ftco-animate text-center mb-4">
+                <h1 class="mb-0 bread">@category?.Name</h1>
+                <p class="breadcrumbs">
+                    <span class="mr-2"><a href="@Url.Action("Index", "Home")">Anasayfa <i class="ion-ios-arrow-forward"></i></a></span>
+                    <span class="mr-2"><a href="@Url.Action("Index", "Menu")">Menü <i class="ion-ios-arrow-forward"></i></a></span>
+                    <span>@category?.Name <i class="ion-ios-arrow-forward"></i></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="col-md-4 text-center">
+                        <div class="menu-wrap">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <a href="#" class="menu-img img mb-4" style="background-image: url(@item.ImageUrl);"></a>
+                            }
+                            else
+                            {
+                                <div class="menu-img img mb-4 d-flex align-items-center justify-content-center" style="background-color: #f8f9fa; height: 250px;">
+                                    <span class="text-muted">Fotoğraf Yok</span>
+                                </div>
+                            }
+                            <div class="text">
+                                <h3>
+                                    <a href="#">
+                                        @item.Name
+                                        @if (item.IsSpecial)
+                                        {
+                                            <span class="badge badge-warning ml-2">Özel</span>
+                                        }
+                                    </a>
+                                </h3>
+                                @if (!string.IsNullOrEmpty(item.Description))
+                                {
+                                    <p>@item.Description</p>
+                                }
+                                <p class="price">
+                                    <span>₺@item.Price.ToString("N2")</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <p class="text-muted">Bu kategoride ürün bulunamadı.</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>
